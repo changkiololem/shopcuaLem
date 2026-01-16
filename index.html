@@ -7,200 +7,138 @@
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            font-family: 'Be Vietnam Pro', sans-serif;
-            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fecaca 100%);
-            min-height: 100vh;
-        }
-        .header {
-            background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
-            color: white;
-            padding: 1.25rem 1rem;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
-        }
-        .header-content {
-            max-width: 900px;
-            margin: 0 auto;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-        }
-        .header-icon { font-size: 2.5rem; }
-        .header h1 { font-size: 1.5rem; font-weight: 700; }
-        .header p { font-size: 0.75rem; opacity: 0.9; }
-        .main { max-width: 900px; margin: 0 auto; padding: 1rem; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fecaca 100%); min-height: 100vh; }
         
-        .alert {
-            padding: 0.75rem 1rem;
-            border-radius: 0.5rem;
-            margin-bottom: 1rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            font-size: 0.875rem;
-        }
+        /* Header */
+        .header { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); color: white; padding: 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .header-content { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 0.75rem; }
+        .header-icon { font-size: 2rem; }
+        .header h1 { font-size: 1.25rem; font-weight: 700; }
+        .header p { font-size: 0.7rem; opacity: 0.9; }
+        
+        /* Tabs */
+        .tabs { max-width: 1000px; margin: 0 auto; padding: 1rem 1rem 0; }
+        .tab-buttons { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+        .tab-btn { padding: 0.75rem 1.25rem; border: none; background: white; border-radius: 0.75rem 0.75rem 0 0; font-family: inherit; font-weight: 600; cursor: pointer; color: #6b7280; transition: all 0.2s; font-size: 0.875rem; }
+        .tab-btn:hover { background: #fff7ed; color: #ea580c; }
+        .tab-btn.active { background: white; color: #ea580c; box-shadow: 0 -4px 10px rgba(0,0,0,0.05); }
+        .tab-content { display: none; background: white; border-radius: 0 0.75rem 0.75rem 0.75rem; padding: 1.25rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+        
+        /* Main */
+        .main { max-width: 1000px; margin: 0 auto; padding: 0 1rem 1rem; }
+        
+        /* Alerts */
+        .alert { padding: 0.75rem 1rem; border-radius: 0.5rem; margin-bottom: 1rem; display: flex; align-items: center; gap: 0.5rem; font-size: 0.8rem; }
         .alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
         .alert-success { background: #dcfce7; border-left: 4px solid #22c55e; color: #166534; }
         .alert-error { background: #fee2e2; border-left: 4px solid #ef4444; color: #991b1b; }
-        .alert-close { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 1rem; opacity: 0.7; }
+        .alert-close { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 1rem; }
         
-        .card {
-            background: white;
-            border-radius: 1rem;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-            margin-bottom: 1rem;
-        }
-        .card-header {
-            padding: 1rem 1.25rem;
-            color: white;
-            font-weight: 700;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
+        /* Cards */
+        .card { background: #f9fafb; border-radius: 0.75rem; overflow: hidden; margin-bottom: 1rem; }
+        .card-header { padding: 0.875rem 1rem; color: white; font-weight: 700; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
         .card-header-orange { background: linear-gradient(135deg, #fb923c 0%, #f87171 100%); }
         .card-header-blue { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); }
-        .card-body { padding: 1.25rem; }
+        .card-header-green { background: linear-gradient(135deg, #22c55e 0%, #10b981 100%); }
+        .card-header-purple { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+        .card-body { padding: 1rem; background: white; }
         
-        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
-        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
-        .form-group { margin-bottom: 1rem; }
-        .form-label { display: block; font-size: 0.75rem; font-weight: 600; color: #4b5563; margin-bottom: 0.375rem; }
-        .form-select, .form-input {
-            width: 100%;
-            padding: 0.75rem 1rem;
-            border: 2px solid #e5e7eb;
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
-            font-family: inherit;
-            background: #f9fafb;
-            transition: all 0.2s;
-        }
-        .form-select:focus, .form-input:focus {
-            outline: none;
-            border-color: #f97316;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
-        }
+        /* Forms */
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 0.75rem; }
+        .form-group { margin-bottom: 0.75rem; }
+        .form-label { display: block; font-size: 0.7rem; font-weight: 600; color: #4b5563; margin-bottom: 0.25rem; }
+        .form-select, .form-input { width: 100%; padding: 0.625rem 0.75rem; border: 2px solid #e5e7eb; border-radius: 0.5rem; font-size: 0.8rem; font-family: inherit; background: #f9fafb; transition: all 0.2s; }
+        .form-select:focus, .form-input:focus { outline: none; border-color: #f97316; background: white; }
         .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
         
-        .price-display {
-            background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
-            border: 2px solid #86efac;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 1rem;
-        }
-        .price-label { font-size: 0.875rem; color: #4b5563; }
+        /* Price Display */
+        .price-display { background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%); border: 2px solid #86efac; border-radius: 0.5rem; padding: 0.75rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.75rem; }
+        .price-label { font-size: 0.8rem; color: #4b5563; }
         .price-unit { font-weight: 700; color: #15803d; }
-        .price-total { font-size: 1.5rem; font-weight: 700; color: #16a34a; }
+        .price-total { font-size: 1.25rem; font-weight: 700; color: #16a34a; }
         
-        .btn {
-            padding: 0.875rem 1.5rem;
-            border: none;
-            border-radius: 0.75rem;
-            font-size: 0.875rem;
-            font-weight: 700;
-            font-family: inherit;
-            cursor: pointer;
-            transition: all 0.2s;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 0.5rem;
-        }
-        .btn-primary {
-            background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
-            color: white;
-            flex: 1;
-        }
-        .btn-primary:hover:not(:disabled) {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
-        }
+        /* Buttons */
+        .btn { padding: 0.625rem 1rem; border: none; border-radius: 0.5rem; font-size: 0.8rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.375rem; }
+        .btn-primary { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); color: white; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); }
         .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
         .btn-secondary { background: white; color: #4b5563; border: 2px solid #d1d5db; }
         .btn-secondary:hover { background: #f3f4f6; }
-        .btn-icon {
-            padding: 0.5rem;
-            background: transparent;
-            border: none;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-size: 1rem;
-            transition: all 0.2s;
-        }
-        .btn-icon-edit:hover { background: #dbeafe; }
-        .btn-icon-delete:hover { background: #fee2e2; }
-        .btn-group { display: flex; gap: 0.75rem; }
+        .btn-success { background: #22c55e; color: white; }
+        .btn-success:hover { background: #16a34a; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-sm { padding: 0.375rem 0.625rem; font-size: 0.75rem; }
+        .btn-group { display: flex; gap: 0.5rem; flex-wrap: wrap; }
         
-        .orders-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
-        .orders-total { font-weight: 700; }
-        .orders-empty { text-align: center; padding: 3rem 1rem; color: #9ca3af; }
-        .orders-empty-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        /* Tables */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.8rem; }
+        th, td { padding: 0.625rem 0.75rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f3f4f6; font-weight: 600; color: #374151; font-size: 0.75rem; }
+        tr:hover { background: #fff7ed; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-green { color: #16a34a; font-weight: 700; }
         
-        .order-item {
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            padding: 0.875rem;
-            background: #f9fafb;
-            border-radius: 0.75rem;
-            margin-bottom: 0.5rem;
-            transition: all 0.2s;
-        }
+        /* Order Items */
+        .order-item { display: flex; align-items: center; gap: 0.5rem; padding: 0.625rem; background: #f9fafb; border-radius: 0.5rem; margin-bottom: 0.375rem; }
         .order-item:hover { background: #fff7ed; }
         .order-info { flex: 1; min-width: 0; }
-        .order-name { font-weight: 600; color: #1f2937; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
-        .order-qty { background: #fed7aa; color: #c2410c; padding: 0.125rem 0.5rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600; }
-        .order-variant { font-size: 0.75rem; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .order-note { font-size: 0.7rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-        .order-price { font-weight: 700; color: #16a34a; font-size: 0.875rem; text-align: right; }
+        .order-name { font-weight: 600; color: #1f2937; font-size: 0.8rem; display: flex; align-items: center; gap: 0.375rem; }
+        .order-qty { background: #fed7aa; color: #c2410c; padding: 0.125rem 0.375rem; border-radius: 1rem; font-size: 0.65rem; font-weight: 600; }
+        .order-variant { font-size: 0.7rem; color: #6b7280; }
+        .order-note { font-size: 0.65rem; color: #9ca3af; }
+        .order-price { font-weight: 700; color: #16a34a; font-size: 0.8rem; }
         .order-actions { display: flex; gap: 0.25rem; }
         
+        /* Empty State */
+        .empty { text-align: center; padding: 2rem 1rem; color: #9ca3af; }
+        .empty-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        
+        /* Config Box */
+        .config-box { background: #fef3c7; border: 2px dashed #f59e0b; border-radius: 0.5rem; padding: 0.75rem; margin-bottom: 1rem; font-size: 0.8rem; }
+        .config-box input { width: 100%; padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 0.375rem; font-family: monospace; font-size: 0.7rem; margin: 0.375rem 0; }
+        .config-box .btn { margin-top: 0.25rem; }
+        
+        /* Menu Management */
+        .menu-filter { display: flex; gap: 0.5rem; margin-bottom: 1rem; flex-wrap: wrap; align-items: center; }
+        .menu-filter select { padding: 0.5rem; border-radius: 0.375rem; border: 1px solid #d1d5db; font-size: 0.8rem; }
+        .dish-badge { display: inline-block; padding: 0.25rem 0.5rem; background: #e0e7ff; color: #4338ca; border-radius: 0.375rem; font-size: 0.7rem; font-weight: 600; }
+        
+        /* Price List */
+        .price-card { background: white; border-radius: 0.75rem; overflow: hidden; margin-bottom: 1rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .price-card-header { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); color: white; padding: 0.75rem 1rem; font-weight: 700; font-size: 0.9rem; }
+        .price-card-body { padding: 0; }
+        .price-item { display: flex; justify-content: space-between; padding: 0.625rem 1rem; border-bottom: 1px solid #f3f4f6; }
+        .price-item:last-child { border-bottom: none; }
+        .price-item:hover { background: #fff7ed; }
+        .price-item-name { color: #374151; font-size: 0.85rem; }
+        .price-item-price { color: #16a34a; font-weight: 700; font-size: 0.85rem; }
+        
+        /* Loading */
         .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
-        .spinner { width: 3rem; height: 3rem; border: 4px solid #fed7aa; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
+        .spinner { width: 2.5rem; height: 2.5rem; border: 4px solid #fed7aa; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
         
-        .footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 1rem; font-size: 0.75rem; margin-top: 2rem; }
+        /* Footer */
+        .footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 0.75rem; font-size: 0.7rem; margin-top: 1.5rem; }
+        
         .hidden { display: none !important; }
         
-        .config-box {
-            background: #fef3c7;
-            border: 2px dashed #f59e0b;
-            border-radius: 0.75rem;
-            padding: 1rem;
-            margin-bottom: 1rem;
-        }
-        .config-box input {
-            width: 100%;
-            padding: 0.5rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.5rem;
-            font-family: monospace;
-            font-size: 0.75rem;
-            margin: 0.5rem 0;
-        }
-        .config-box button {
-            background: #f59e0b;
-            color: white;
-            border: none;
-            padding: 0.5rem 1rem;
-            border-radius: 0.5rem;
-            cursor: pointer;
-            font-weight: 600;
-        }
-        .config-box button:hover { background: #d97706; }
+        /* Modal */
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 0.75rem; width: 90%; max-width: 400px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 1rem; border-bottom: 1px solid #e5e7eb; font-weight: 700; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 1rem; }
+        .modal-footer { padding: 1rem; border-top: 1px solid #e5e7eb; display: flex; gap: 0.5rem; justify-content: flex-end; }
     </style>
 </head>
 <body>
     <div id="loading" class="loading">
         <div class="spinner"></div>
-        <p style="margin-top: 1rem; color: #c2410c;">Đang tải dữ liệu...</p>
+        <p style="margin-top: 1rem; color: #c2410c; font-size: 0.875rem;">Đang tải...</p>
     </div>
 
     <div id="app" class="hidden">
@@ -209,124 +147,162 @@
                 <span class="header-icon">🍜</span>
                 <div>
                     <h1>Đặt Cơm Trưa</h1>
-                    <p id="headerSubtitle">Hệ thống đặt món nhanh chóng & tiện lợi</p>
+                    <p id="headerSubtitle">Hệ thống đặt món</p>
                 </div>
             </div>
         </header>
 
+        <!-- Tabs -->
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('order')">🛒 Đặt món</button>
+                <button class="tab-btn" onclick="showTab('menu')">📋 Quản lý Menu</button>
+                <button class="tab-btn" onclick="showTab('price')">💰 Bảng giá</button>
+                <button class="tab-btn" onclick="showTab('config')">⚙️ Cấu hình</button>
+            </div>
+        </div>
+
         <main class="main">
-            <!-- Config Box -->
-            <div id="configBox" class="config-box">
-                <strong>⚙️ Cấu hình Google Sheet</strong>
-                <p style="font-size: 0.75rem; color: #92400e; margin-top: 0.5rem;">
-                    Dán URL Google Apps Script vào đây (lấy sau khi Deploy Web App):
-                </p>
-                <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxx.../exec">
-                <button onclick="saveScriptUrl()">💾 Lưu & Kết nối</button>
-                <button onclick="clearScriptUrl()" style="background: #6b7280; margin-left: 0.5rem;">🗑️ Xóa</button>
-            </div>
-
-            <!-- Demo Alert -->
-            <div id="demoAlert" class="alert alert-info hidden">
-                <span>💡</span>
-                <div><strong>Chế độ Demo</strong> - Dữ liệu lưu tạm thời trong trình duyệt.</div>
-            </div>
-
-            <!-- Connected Alert -->
-            <div id="connectedAlert" class="alert alert-success hidden">
-                <span>✅</span>
-                <div><strong>Đã kết nối Google Sheet!</strong> - Dữ liệu sẽ được lưu vào Sheet.</div>
-            </div>
-
-            <!-- Success Alert -->
+            <!-- Alerts -->
             <div id="successAlert" class="alert alert-success hidden">
-                <span>✅</span>
-                <span id="successMessage"></span>
+                <span>✅</span><span id="successMessage"></span>
                 <button class="alert-close" onclick="hideSuccess()">✕</button>
             </div>
-
-            <!-- Error Alert -->
             <div id="errorAlert" class="alert alert-error hidden">
-                <span>⚠️</span>
-                <span id="errorMessage"></span>
+                <span>⚠️</span><span id="errorMessage"></span>
                 <button class="alert-close" onclick="hideError()">✕</button>
             </div>
 
-            <!-- Order Form -->
-            <div class="card">
-                <div class="card-header card-header-orange">
-                    <span id="formTitle">📝 Đặt món mới</span>
+            <!-- TAB 1: ĐẶT MÓN -->
+            <div id="tab-order" class="tab-content active">
+                <div class="card">
+                    <div class="card-header card-header-orange">
+                        <span id="formTitle">📝 Đặt món mới</span>
+                    </div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label class="form-label">👤 Người đặt</label>
+                                <select id="selectPerson" class="form-select"><option value="">-- Chọn --</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🍽️ Món ăn</label>
+                                <select id="selectDish" class="form-select"><option value="">-- Chọn --</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🥢 Biến thể</label>
+                                <select id="selectVariant" class="form-select" disabled><option value="">-- Chọn --</option></select>
+                            </div>
+                            <div class="form-group">
+                                <label class="form-label">🔢 Số lượng</label>
+                                <select id="selectQuantity" class="form-select">
+                                    <option value="1">1</option><option value="2">2</option><option value="3">3</option>
+                                    <option value="4">4</option><option value="5">5</option><option value="6">6</option>
+                                    <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div id="priceDisplay" class="price-display hidden">
+                            <div><span class="price-label">Đơn giá: </span><span id="unitPrice" class="price-unit">0 đ</span></div>
+                            <div id="totalPrice" class="price-total">0 đ</div>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">📝 Ghi chú</label>
+                            <input type="text" id="inputNote" class="form-input" placeholder="Ít cơm, thêm rau...">
+                        </div>
+                        <div class="btn-group">
+                            <button id="btnSubmit" class="btn btn-primary" disabled onclick="submitOrder()">🛒 Đặt món</button>
+                            <button id="btnCancel" class="btn btn-secondary hidden" onclick="resetOrderForm()">Hủy</button>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">👤 Người đặt</label>
-                            <select id="selectPerson" class="form-select">
-                                <option value="">-- Chọn người --</option>
-                            </select>
+
+                <div class="card">
+                    <div class="card-header card-header-blue">
+                        <span>📋 Đã đặt (<span id="orderCount">0</span>)</span>
+                        <span style="margin-left:auto" id="grandTotal"></span>
+                    </div>
+                    <div class="card-body" id="ordersList"></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: QUẢN LÝ MENU -->
+            <div id="tab-menu" class="tab-content">
+                <!-- Quản lý người -->
+                <div class="card">
+                    <div class="card-header card-header-purple">👥 Quản lý người đặt</div>
+                    <div class="card-body">
+                        <div class="form-grid" style="margin-bottom:0.75rem">
+                            <input type="text" id="inputNewPerson" class="form-input" placeholder="Nhập tên người mới...">
+                            <button class="btn btn-success" onclick="addPerson()">➕ Thêm người</button>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">🍽️ Món ăn</label>
-                            <select id="selectDish" class="form-select">
-                                <option value="">-- Chọn món --</option>
-                            </select>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Tên</th><th style="width:100px" class="text-center">Thao tác</th></tr></thead>
+                                <tbody id="peopleList"></tbody>
+                            </table>
                         </div>
                     </div>
+                </div>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label class="form-label">🥢 Biến thể</label>
-                            <select id="selectVariant" class="form-select" disabled>
-                                <option value="">-- Chọn biến thể --</option>
+                <!-- Quản lý món -->
+                <div class="card">
+                    <div class="card-header card-header-green">🍽️ Quản lý món & biến thể</div>
+                    <div class="card-body">
+                        <div class="form-grid" style="margin-bottom:0.75rem">
+                            <input type="text" id="inputNewDish" class="form-input" placeholder="Tên món chính...">
+                            <input type="text" id="inputNewVariant" class="form-input" placeholder="Tên biến thể...">
+                            <input type="number" id="inputNewPrice" class="form-input" placeholder="Giá (VNĐ)">
+                            <button class="btn btn-success" onclick="addMenuItem()">➕ Thêm món</button>
+                        </div>
+                        <div class="menu-filter">
+                            <label style="font-size:0.8rem;font-weight:600">Lọc theo món:</label>
+                            <select id="filterDish" onchange="renderMenuList()">
+                                <option value="">Tất cả</option>
                             </select>
                         </div>
-                        <div class="form-group">
-                            <label class="form-label">🔢 Số lượng</label>
-                            <select id="selectQuantity" class="form-select">
-                                <option value="1">1</option>
-                                <option value="2">2</option>
-                                <option value="3">3</option>
-                                <option value="4">4</option>
-                                <option value="5">5</option>
-                                <option value="6">6</option>
-                                <option value="7">7</option>
-                                <option value="8">8</option>
-                                <option value="9">9</option>
-                                <option value="10">10</option>
-                            </select>
+                        <div class="table-container">
+                            <table>
+                                <thead><tr><th>Món chính</th><th>Biến thể</th><th class="text-right">Giá</th><th style="width:100px" class="text-center">Thao tác</th></tr></thead>
+                                <tbody id="menuList"></tbody>
+                            </table>
                         </div>
-                    </div>
-
-                    <div id="priceDisplay" class="price-display hidden">
-                        <div>
-                            <span class="price-label">Đơn giá: </span>
-                            <span id="unitPrice" class="price-unit">0 đ</span>
-                        </div>
-                        <div id="totalPrice" class="price-total">0 đ</div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="form-label">📝 Ghi chú</label>
-                        <input type="text" id="inputNote" class="form-input" placeholder="Ít cơm, thêm rau, không hành...">
-                    </div>
-
-                    <div class="btn-group">
-                        <button id="btnSubmit" class="btn btn-primary" disabled>🛒 Đặt món</button>
-                        <button id="btnCancel" class="btn btn-secondary hidden" onclick="resetForm()">Hủy</button>
                     </div>
                 </div>
             </div>
 
-            <!-- Orders List -->
-            <div class="card">
-                <div class="card-header card-header-blue">
-                    <div class="orders-header">
-                        <span>📋 Danh sách đã đặt (<span id="orderCount">0</span> món)</span>
-                        <span id="grandTotal" class="orders-total"></span>
+            <!-- TAB 3: BẢNG GIÁ -->
+            <div id="tab-price" class="tab-content">
+                <div id="priceListContainer"></div>
+            </div>
+
+            <!-- TAB 4: CẤU HÌNH -->
+            <div id="tab-config" class="tab-content">
+                <div class="card">
+                    <div class="card-header card-header-orange">⚙️ Kết nối Google Sheet</div>
+                    <div class="card-body">
+                        <p style="font-size:0.8rem;color:#6b7280;margin-bottom:0.75rem">
+                            Dán URL Google Apps Script vào đây để kết nối với Google Sheet:
+                        </p>
+                        <input type="text" id="scriptUrlInput" class="form-input" placeholder="https://script.google.com/macros/s/xxx.../exec">
+                        <div class="btn-group" style="margin-top:0.75rem">
+                            <button class="btn btn-success" onclick="saveScriptUrl()">💾 Lưu & Kết nối</button>
+                            <button class="btn btn-secondary" onclick="clearScriptUrl()">🗑️ Xóa cấu hình</button>
+                        </div>
+                        <div id="connectionStatus" style="margin-top:1rem;padding:0.75rem;border-radius:0.5rem;font-size:0.8rem"></div>
                     </div>
                 </div>
-                <div class="card-body">
-                    <div id="ordersList"></div>
+
+                <div class="card">
+                    <div class="card-header card-header-blue">📖 Hướng dẫn</div>
+                    <div class="card-body" style="font-size:0.8rem;color:#4b5563;line-height:1.6">
+                        <p><strong>Bước 1:</strong> Tạo Google Sheet mới</p>
+                        <p><strong>Bước 2:</strong> Vào Extensions → Apps Script</p>
+                        <p><strong>Bước 3:</strong> Dán code từ file <code>google-apps-script.js</code></p>
+                        <p><strong>Bước 4:</strong> Chạy hàm <code>setupSheets()</code></p>
+                        <p><strong>Bước 5:</strong> Deploy → New deployment → Web app → Anyone</p>
+                        <p><strong>Bước 6:</strong> Copy URL và dán vào ô trên</p>
+                    </div>
                 </div>
             </div>
         </main>
@@ -334,211 +310,176 @@
         <footer class="footer">🍜 Hệ thống đặt cơm trưa © 2024</footer>
     </div>
 
-    <script>
-        // ============ DỮ LIỆU MẪU ============
-        const MOCK_DATA = {
-            people: ["Huyền", "Minh", "Lan", "Tuấn", "Hoa", "Nam", "Linh", "Đức", "Mai", "Phong"],
-            dishes: ["Cơm tấm", "Phở", "Bún bò", "Cơm văn phòng", "Bánh mì"],
-            variants: [
-                { dish: "Cơm tấm", variant: "Cơm sườn", price: 35000 },
-                { dish: "Cơm tấm", variant: "Cơm sườn chả", price: 40000 },
-                { dish: "Cơm tấm", variant: "Cơm sườn bì chả", price: 45000 },
-                { dish: "Cơm tấm", variant: "Cơm sườn trứng", price: 40000 },
-                { dish: "Phở", variant: "Phở bò tái", price: 45000 },
-                { dish: "Phở", variant: "Phở bò chín", price: 45000 },
-                { dish: "Phở", variant: "Phở bò viên", price: 40000 },
-                { dish: "Phở", variant: "Phở gà", price: 45000 },
-                { dish: "Bún bò", variant: "Bún bò giò heo", price: 50000 },
-                { dish: "Bún bò", variant: "Bún bò gân", price: 45000 },
-                { dish: "Bún bò", variant: "Bún bò thập cẩm", price: 55000 },
-                { dish: "Cơm văn phòng", variant: "Cơm gà xối mỡ", price: 35000 },
-                { dish: "Cơm văn phòng", variant: "Cơm sườn cốt lết", price: 40000 },
-                { dish: "Cơm văn phòng", variant: "Cơm cá chiên", price: 40000 },
-                { dish: "Cơm văn phòng", variant: "Cơm thịt kho", price: 35000 },
-                { dish: "Bánh mì", variant: "Bánh mì thịt", price: 25000 },
-                { dish: "Bánh mì", variant: "Bánh mì chả", price: 25000 },
-                { dish: "Bánh mì", variant: "Bánh mì ốp la", price: 30000 },
-                { dish: "Bánh mì", variant: "Bánh mì bò kho", price: 35000 },
-            ],
-            orders: []
-        };
+    <!-- Modal Edit Person -->
+    <div id="modalEditPerson" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">✏️ Sửa tên<button onclick="closeModal('modalEditPerson')" style="background:none;border:none;font-size:1.25rem;cursor:pointer">✕</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="editPersonOld">
+                <input type="text" id="editPersonNew" class="form-input" placeholder="Tên mới...">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalEditPerson')">Hủy</button>
+                <button class="btn btn-primary" onclick="saveEditPerson()">💾 Lưu</button>
+            </div>
+        </div>
+    </div>
 
+    <!-- Modal Edit Menu Item -->
+    <div id="modalEditMenu" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">✏️ Sửa món<button onclick="closeModal('modalEditMenu')" style="background:none;border:none;font-size:1.25rem;cursor:pointer">✕</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="editMenuOldVariant">
+                <div class="form-group">
+                    <label class="form-label">Món chính</label>
+                    <input type="text" id="editMenuDish" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Biến thể</label>
+                    <input type="text" id="editMenuVariant" class="form-input">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Giá (VNĐ)</label>
+                    <input type="number" id="editMenuPrice" class="form-input">
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-secondary" onclick="closeModal('modalEditMenu')">Hủy</button>
+                <button class="btn btn-primary" onclick="saveEditMenuItem()">💾 Lưu</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
         // ============ STATE ============
         let SCRIPT_URL = localStorage.getItem('SCRIPT_URL') || '';
-        let state = {
-            people: [],
-            dishes: [],
-            variants: [],
-            orders: [],
-            currentPrice: 0,
-            editingId: null,
-            isDemo: true
-        };
-
-        // ============ DOM ============
+        let state = { people: [], dishes: [], variants: [], orders: [], currentPrice: 0, editingOrderId: null, isDemo: true };
         const $ = id => document.getElementById(id);
-        const formatMoney = amount => new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
+        const formatMoney = n => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
+
+        // ============ TABS ============
+        function showTab(tab) {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+            document.querySelector(`[onclick="showTab('${tab}')"]`).classList.add('active');
+            $(`tab-${tab}`).classList.add('active');
+            if (tab === 'price') renderPriceList();
+            if (tab === 'menu') { renderPeopleList(); renderMenuList(); }
+        }
+
+        // ============ ALERTS ============
+        function showSuccess(msg) { $('successMessage').textContent = msg; $('successAlert').classList.remove('hidden'); setTimeout(hideSuccess, 3000); }
+        function hideSuccess() { $('successAlert').classList.add('hidden'); }
+        function showError(msg) { $('errorMessage').textContent = msg; $('errorAlert').classList.remove('hidden'); }
+        function hideError() { $('errorAlert').classList.add('hidden'); }
+
+        // ============ MODALS ============
+        function closeModal(id) { $(id).classList.add('hidden'); }
+
+        // ============ API ============
+        async function callApi(action, data = {}) {
+            if (!SCRIPT_URL) return null;
+            try {
+                let url = SCRIPT_URL, options = {};
+                if (['getData', 'getMenu', 'getPeople'].includes(action)) {
+                    url += '?action=' + action;
+                    options = { method: 'GET' };
+                } else {
+                    options = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, ...data }), redirect: 'follow' };
+                }
+                const response = await fetch(url, options);
+                const text = await response.text();
+                return JSON.parse(text);
+            } catch (err) { console.error('API Error:', err); return { success: false, error: err.message }; }
+        }
 
         // ============ CONFIG ============
         function saveScriptUrl() {
             const url = $('scriptUrlInput').value.trim();
-            if (!url) {
-                showError('Vui lòng nhập URL!');
-                return;
-            }
-            if (!url.startsWith('https://script.google.com/')) {
-                showError('URL không hợp lệ! Phải bắt đầu bằng https://script.google.com/');
-                return;
-            }
+            if (!url) { showError('Vui lòng nhập URL!'); return; }
+            if (!url.startsWith('https://script.google.com/')) { showError('URL không hợp lệ!'); return; }
             localStorage.setItem('SCRIPT_URL', url);
             SCRIPT_URL = url;
-            showSuccess('Đã lưu URL! Đang kết nối...');
+            showSuccess('Đã lưu! Đang kết nối...');
             loadData();
         }
-
         function clearScriptUrl() {
             localStorage.removeItem('SCRIPT_URL');
             SCRIPT_URL = '';
             $('scriptUrlInput').value = '';
-            showSuccess('Đã xóa cấu hình. Chuyển sang chế độ Demo.');
+            showSuccess('Đã xóa. Chuyển sang Demo.');
             loadData();
         }
 
-        // ============ ALERTS ============
-        function showSuccess(msg) {
-            $('successMessage').textContent = msg;
-            $('successAlert').classList.remove('hidden');
-            setTimeout(hideSuccess, 3000);
-        }
-        function hideSuccess() { $('successAlert').classList.add('hidden'); }
-        function showError(msg) {
-            $('errorMessage').textContent = msg;
-            $('errorAlert').classList.remove('hidden');
-        }
-        function hideError() { $('errorAlert').classList.add('hidden'); }
-
-        // ============ API CALLS ============
-        async function callApi(action, data = {}) {
-            if (!SCRIPT_URL) return null;
-            
-            try {
-                let url = SCRIPT_URL;
-                let options = {};
-
-                if (action === 'getData') {
-                    // GET request
-                    url += '?action=getData';
-                    options = { method: 'GET' };
-                } else {
-                    // POST request - sử dụng redirect: 'follow'
-                    options = {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
-                        body: JSON.stringify({ action, ...data }),
-                        redirect: 'follow'
-                    };
-                }
-
-                const response = await fetch(url, options);
-                const text = await response.text();
-                
-                try {
-                    return JSON.parse(text);
-                } catch {
-                    console.error('Invalid JSON response:', text);
-                    return { success: false, error: 'Invalid response from server' };
-                }
-            } catch (err) {
-                console.error('API Error:', err);
-                return { success: false, error: err.message };
-            }
-        }
-
-        // ============ DATA LOADING ============
+        // ============ LOAD DATA ============
         async function loadData() {
             hideError();
-            
-            // Hiển thị URL đã lưu
-            if (SCRIPT_URL) {
-                $('scriptUrlInput').value = SCRIPT_URL;
-            }
+            if (SCRIPT_URL) $('scriptUrlInput').value = SCRIPT_URL;
 
             if (!SCRIPT_URL) {
-                // Demo mode
                 state.isDemo = true;
-                state.people = [...MOCK_DATA.people];
-                state.dishes = [...MOCK_DATA.dishes];
-                state.variants = [...MOCK_DATA.variants];
-                
-                // Load orders từ localStorage
-                const savedOrders = localStorage.getItem('demoOrders');
-                state.orders = savedOrders ? JSON.parse(savedOrders) : [];
-                
-                $('demoAlert').classList.remove('hidden');
-                $('connectedAlert').classList.add('hidden');
-                $('configBox').classList.remove('hidden');
-                $('headerSubtitle').textContent = 'Chế độ Demo - Dữ liệu lưu trong trình duyệt';
+                state.people = ["Huyền", "Minh", "Lan", "Tuấn", "Hoa", "Nam", "Linh", "Đức", "Mai", "Phong"];
+                state.dishes = ["Cơm tấm", "Phở", "Bún bò", "Cơm văn phòng", "Bánh mì"];
+                state.variants = [
+                    { dish: "Cơm tấm", variant: "Cơm sườn", price: 35000 },
+                    { dish: "Cơm tấm", variant: "Cơm sườn chả", price: 40000 },
+                    { dish: "Cơm tấm", variant: "Cơm sườn bì chả", price: 45000 },
+                    { dish: "Cơm tấm", variant: "Cơm sườn trứng", price: 40000 },
+                    { dish: "Phở", variant: "Phở bò tái", price: 45000 },
+                    { dish: "Phở", variant: "Phở bò chín", price: 45000 },
+                    { dish: "Phở", variant: "Phở bò viên", price: 40000 },
+                    { dish: "Phở", variant: "Phở gà", price: 45000 },
+                    { dish: "Bún bò", variant: "Bún bò giò heo", price: 50000 },
+                    { dish: "Bún bò", variant: "Bún bò gân", price: 45000 },
+                    { dish: "Bún bò", variant: "Bún bò thập cẩm", price: 55000 },
+                    { dish: "Cơm văn phòng", variant: "Cơm gà xối mỡ", price: 35000 },
+                    { dish: "Cơm văn phòng", variant: "Cơm sườn cốt lết", price: 40000 },
+                    { dish: "Cơm văn phòng", variant: "Cơm cá chiên", price: 40000 },
+                    { dish: "Cơm văn phòng", variant: "Cơm thịt kho", price: 35000 },
+                    { dish: "Bánh mì", variant: "Bánh mì thịt", price: 25000 },
+                    { dish: "Bánh mì", variant: "Bánh mì chả", price: 25000 },
+                    { dish: "Bánh mì", variant: "Bánh mì ốp la", price: 30000 },
+                    { dish: "Bánh mì", variant: "Bánh mì bò kho", price: 35000 }
+                ];
+                state.orders = JSON.parse(localStorage.getItem('demoOrders') || '[]');
+                $('connectionStatus').innerHTML = '<span style="color:#d97706">⚠️ Chế độ Demo - Dữ liệu lưu trong trình duyệt</span>';
+                $('headerSubtitle').textContent = 'Chế độ Demo';
             } else {
-                // Connected mode
                 const result = await callApi('getData');
-                
                 if (result && result.success) {
                     state.isDemo = false;
                     state.people = result.people || [];
                     state.dishes = result.dishes || [];
                     state.variants = result.variants || [];
                     state.orders = result.orders || [];
-                    
-                    $('demoAlert').classList.add('hidden');
-                    $('connectedAlert').classList.remove('hidden');
-                    $('configBox').classList.add('hidden');
+                    $('connectionStatus').innerHTML = '<span style="color:#16a34a">✅ Đã kết nối Google Sheet</span>';
                     $('headerSubtitle').textContent = 'Đã kết nối Google Sheet';
                 } else {
-                    showError('Không thể kết nối Google Sheet: ' + (result?.error || 'Unknown error'));
-                    // Fallback to demo
+                    showError('Không thể kết nối: ' + (result?.error || 'Unknown'));
                     state.isDemo = true;
-                    state.people = [...MOCK_DATA.people];
-                    state.dishes = [...MOCK_DATA.dishes];
-                    state.variants = [...MOCK_DATA.variants];
-                    state.orders = [];
-                    
-                    $('demoAlert').classList.remove('hidden');
-                    $('connectedAlert').classList.add('hidden');
-                    $('configBox').classList.remove('hidden');
+                    $('connectionStatus').innerHTML = '<span style="color:#dc2626">❌ Lỗi kết nối</span>';
                 }
             }
 
-            renderPeopleOptions();
-            renderDishOptions();
+            renderSelects();
             renderOrders();
-            
             $('loading').classList.add('hidden');
             $('app').classList.remove('hidden');
         }
 
-        // ============ RENDERING ============
-        function renderPeopleOptions() {
-            const select = $('selectPerson');
-            select.innerHTML = '<option value="">-- Chọn người --</option>';
-            state.people.forEach(p => {
-                select.innerHTML += `<option value="${p}">${p}</option>`;
-            });
-        }
-
-        function renderDishOptions() {
-            const select = $('selectDish');
-            select.innerHTML = '<option value="">-- Chọn món --</option>';
-            state.dishes.forEach(d => {
-                select.innerHTML += `<option value="${d}">${d}</option>`;
-            });
+        // ============ RENDER ============
+        function renderSelects() {
+            $('selectPerson').innerHTML = '<option value="">-- Chọn --</option>' + state.people.map(p => `<option value="${p}">${p}</option>`).join('');
+            $('selectDish').innerHTML = '<option value="">-- Chọn --</option>' + state.dishes.map(d => `<option value="${d}">${d}</option>`).join('');
+            $('filterDish').innerHTML = '<option value="">Tất cả</option>' + state.dishes.map(d => `<option value="${d}">${d}</option>`).join('');
         }
 
         function renderVariantOptions(dish) {
             const select = $('selectVariant');
-            select.innerHTML = '<option value="">-- Chọn biến thể --</option>';
+            select.innerHTML = '<option value="">-- Chọn --</option>';
             if (!dish) { select.disabled = true; return; }
-            const filtered = state.variants.filter(v => v.dish === dish);
-            filtered.forEach(v => {
+            state.variants.filter(v => v.dish === dish).forEach(v => {
                 select.innerHTML += `<option value="${v.variant}">${v.variant}</option>`;
             });
             select.disabled = false;
@@ -547,57 +488,94 @@
         function renderOrders() {
             const container = $('ordersList');
             if (state.orders.length === 0) {
-                container.innerHTML = `<div class="orders-empty"><div class="orders-empty-icon">🍽️</div><p>Chưa có đơn hàng nào</p></div>`;
+                container.innerHTML = '<div class="empty"><div class="empty-icon">🍽️</div><p>Chưa có đơn hàng</p></div>';
                 $('orderCount').textContent = '0';
                 $('grandTotal').textContent = '';
                 return;
             }
-
-            let html = '';
-            let total = 0;
-            state.orders.forEach(order => {
-                const orderTotal = order.total || (order.price * order.quantity);
-                total += orderTotal;
-                html += `
-                    <div class="order-item">
-                        <div class="order-info">
-                            <div class="order-name">${order.person}<span class="order-qty">x${order.quantity}</span></div>
-                            <div class="order-variant">${order.variant}</div>
-                            ${order.note ? `<div class="order-note">📝 ${order.note}</div>` : ''}
-                        </div>
-                        <div class="order-price">${formatMoney(orderTotal)}</div>
-                        <div class="order-actions">
-                            <button class="btn-icon btn-icon-edit" onclick="editOrder('${order.id}')" title="Sửa">✏️</button>
-                            <button class="btn-icon btn-icon-delete" onclick="deleteOrder('${order.id}')" title="Xóa">🗑️</button>
-                        </div>
-                    </div>`;
+            let html = '', total = 0;
+            state.orders.forEach(o => {
+                const t = o.total || o.price * o.quantity;
+                total += t;
+                html += `<div class="order-item">
+                    <div class="order-info">
+                        <div class="order-name">${o.person}<span class="order-qty">x${o.quantity}</span></div>
+                        <div class="order-variant">${o.variant}</div>
+                        ${o.note ? `<div class="order-note">📝 ${o.note}</div>` : ''}
+                    </div>
+                    <div class="order-price">${formatMoney(t)}</div>
+                    <div class="order-actions">
+                        <button class="btn btn-sm btn-secondary" onclick="editOrder('${o.id}')">✏️</button>
+                        <button class="btn btn-sm btn-danger" onclick="deleteOrder('${o.id}')">🗑️</button>
+                    </div>
+                </div>`;
             });
             container.innerHTML = html;
             $('orderCount').textContent = state.orders.length;
             $('grandTotal').textContent = 'Tổng: ' + formatMoney(total);
         }
 
+        function renderPeopleList() {
+            $('peopleList').innerHTML = state.people.map(p => `<tr>
+                <td>${p}</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-secondary" onclick="openEditPerson('${p}')">✏️</button>
+                    <button class="btn btn-sm btn-danger" onclick="deletePerson('${p}')">🗑️</button>
+                </td>
+            </tr>`).join('') || '<tr><td colspan="2" class="text-center" style="color:#9ca3af">Chưa có người</td></tr>';
+        }
+
+        function renderMenuList() {
+            const filter = $('filterDish').value;
+            const items = filter ? state.variants.filter(v => v.dish === filter) : state.variants;
+            $('menuList').innerHTML = items.map(v => `<tr>
+                <td><span class="dish-badge">${v.dish}</span></td>
+                <td>${v.variant}</td>
+                <td class="text-right text-green">${formatMoney(v.price)}</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-secondary" onclick="openEditMenuItem('${v.variant}')">✏️</button>
+                    <button class="btn btn-sm btn-danger" onclick="deleteMenuItem('${v.variant}')">🗑️</button>
+                </td>
+            </tr>`).join('') || '<tr><td colspan="4" class="text-center" style="color:#9ca3af">Chưa có món</td></tr>';
+        }
+
+        function renderPriceList() {
+            const grouped = {};
+            state.variants.forEach(v => {
+                if (!grouped[v.dish]) grouped[v.dish] = [];
+                grouped[v.dish].push(v);
+            });
+            let html = '';
+            Object.keys(grouped).sort().forEach(dish => {
+                const items = grouped[dish].sort((a, b) => a.price - b.price);
+                html += `<div class="price-card">
+                    <div class="price-card-header">🍽️ ${dish}</div>
+                    <div class="price-card-body">
+                        ${items.map(v => `<div class="price-item"><span class="price-item-name">${v.variant}</span><span class="price-item-price">${formatMoney(v.price)}</span></div>`).join('')}
+                    </div>
+                </div>`;
+            });
+            $('priceListContainer').innerHTML = html || '<div class="empty"><div class="empty-icon">📋</div><p>Chưa có món</p></div>';
+        }
+
+        // ============ ORDER FUNCTIONS ============
         function updatePrice() {
             const variant = $('selectVariant').value;
-            const quantity = parseInt($('selectQuantity').value) || 1;
+            const qty = parseInt($('selectQuantity').value) || 1;
             if (!variant) { state.currentPrice = 0; $('priceDisplay').classList.add('hidden'); return; }
             const found = state.variants.find(v => v.variant === variant);
             state.currentPrice = found ? found.price : 0;
             $('unitPrice').textContent = formatMoney(state.currentPrice);
-            $('totalPrice').textContent = formatMoney(state.currentPrice * quantity);
+            $('totalPrice').textContent = formatMoney(state.currentPrice * qty);
             $('priceDisplay').classList.remove('hidden');
         }
 
-        function updateSubmitButton() {
-            const person = $('selectPerson').value;
-            const dish = $('selectDish').value;
-            const variant = $('selectVariant').value;
-            $('btnSubmit').disabled = !person || !dish || !variant;
+        function updateSubmitBtn() {
+            $('btnSubmit').disabled = !$('selectPerson').value || !$('selectDish').value || !$('selectVariant').value;
         }
 
-        // ============ FORM ACTIONS ============
-        function resetForm() {
-            state.editingId = null;
+        function resetOrderForm() {
+            state.editingOrderId = null;
             $('selectPerson').value = '';
             $('selectDish').value = '';
             $('selectVariant').value = '';
@@ -609,116 +587,162 @@
             $('formTitle').textContent = '📝 Đặt món mới';
             $('btnSubmit').textContent = '🛒 Đặt món';
             $('btnCancel').classList.add('hidden');
-            updateSubmitButton();
+            updateSubmitBtn();
         }
 
         async function submitOrder() {
-            const person = $('selectPerson').value;
-            const dish = $('selectDish').value;
-            const variant = $('selectVariant').value;
-            const quantity = parseInt($('selectQuantity').value);
-            const note = $('inputNote').value;
+            const person = $('selectPerson').value, dish = $('selectDish').value, variant = $('selectVariant').value;
+            const qty = parseInt($('selectQuantity').value), note = $('inputNote').value;
+            if (!person || !dish || !variant) return;
 
-            if (!person || !dish || !variant) {
-                showError('Vui lòng chọn đầy đủ thông tin!');
-                return;
-            }
-
-            const orderData = {
-                id: state.editingId || Date.now().toString(),
-                person, dish, variant, quantity,
-                price: state.currentPrice,
-                total: state.currentPrice * quantity,
-                note,
-                timestamp: new Date().toISOString()
-            };
-
+            const order = { id: state.editingOrderId || Date.now().toString(), person, dish, variant, quantity: qty, price: state.currentPrice, total: state.currentPrice * qty, note, timestamp: new Date().toISOString() };
             $('btnSubmit').disabled = true;
-            $('btnSubmit').textContent = '⏳ Đang lưu...';
+            $('btnSubmit').textContent = '⏳...';
 
             if (state.isDemo) {
-                // Demo mode
-                if (state.editingId) {
-                    const idx = state.orders.findIndex(o => o.id === state.editingId);
-                    if (idx !== -1) state.orders[idx] = orderData;
-                    showSuccess('Đã cập nhật!');
-                } else {
-                    state.orders.push(orderData);
-                    showSuccess('Đặt món thành công!');
-                }
-                // Lưu vào localStorage
+                if (state.editingOrderId) { const idx = state.orders.findIndex(o => o.id === state.editingOrderId); if (idx !== -1) state.orders[idx] = order; }
+                else state.orders.push(order);
                 localStorage.setItem('demoOrders', JSON.stringify(state.orders));
+                showSuccess(state.editingOrderId ? 'Đã cập nhật!' : 'Đặt món thành công!');
                 renderOrders();
-                resetForm();
+                resetOrderForm();
             } else {
-                // Real mode
-                const action = state.editingId ? 'updateOrder' : 'addOrder';
-                const result = await callApi(action, { order: orderData });
-
-                if (result && result.success) {
-                    showSuccess(state.editingId ? 'Đã cập nhật!' : 'Đặt món thành công!');
-                    await loadData();
-                    resetForm();
-                } else {
-                    showError('Lỗi: ' + (result?.error || 'Không thể lưu'));
-                    $('btnSubmit').disabled = false;
-                    $('btnSubmit').textContent = state.editingId ? '💾 Cập nhật' : '🛒 Đặt món';
-                }
+                const action = state.editingOrderId ? 'updateOrder' : 'addOrder';
+                const result = await callApi(action, { order });
+                if (result?.success) { showSuccess(state.editingOrderId ? 'Đã cập nhật!' : 'Đặt món thành công!'); await loadData(); resetOrderForm(); }
+                else { showError('Lỗi: ' + (result?.error || 'Unknown')); $('btnSubmit').disabled = false; $('btnSubmit').textContent = state.editingOrderId ? '💾 Cập nhật' : '🛒 Đặt món'; }
             }
         }
 
         function editOrder(id) {
-            const order = state.orders.find(o => o.id === id || o.id === String(id));
-            if (!order) return;
-            state.editingId = order.id;
-            $('selectPerson').value = order.person;
-            $('selectDish').value = order.dish;
-            renderVariantOptions(order.dish);
-            setTimeout(() => {
-                $('selectVariant').value = order.variant;
-                updatePrice();
-            }, 50);
-            $('selectQuantity').value = order.quantity;
-            $('inputNote').value = order.note || '';
+            const o = state.orders.find(x => x.id === id || x.id === String(id));
+            if (!o) return;
+            state.editingOrderId = o.id;
+            $('selectPerson').value = o.person;
+            $('selectDish').value = o.dish;
+            renderVariantOptions(o.dish);
+            setTimeout(() => { $('selectVariant').value = o.variant; updatePrice(); }, 50);
+            $('selectQuantity').value = o.quantity;
+            $('inputNote').value = o.note || '';
             $('formTitle').textContent = '✏️ Chỉnh sửa';
             $('btnSubmit').textContent = '💾 Cập nhật';
             $('btnCancel').classList.remove('hidden');
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-            updateSubmitButton();
+            updateSubmitBtn();
+            showTab('order');
         }
 
         async function deleteOrder(id) {
-            if (!confirm('Xóa đơn hàng này?')) return;
+            if (!confirm('Xóa đơn này?')) return;
+            if (state.isDemo) { state.orders = state.orders.filter(o => o.id !== id); localStorage.setItem('demoOrders', JSON.stringify(state.orders)); showSuccess('Đã xóa!'); renderOrders(); }
+            else { const result = await callApi('deleteOrder', { id }); if (result?.success) { showSuccess('Đã xóa!'); await loadData(); } else showError('Lỗi: ' + (result?.error || 'Unknown')); }
+        }
 
+        // ============ PEOPLE FUNCTIONS ============
+        async function addPerson() {
+            const name = $('inputNewPerson').value.trim();
+            if (!name) { showError('Nhập tên!'); return; }
             if (state.isDemo) {
-                state.orders = state.orders.filter(o => o.id !== id && o.id !== String(id));
-                localStorage.setItem('demoOrders', JSON.stringify(state.orders));
-                showSuccess('Đã xóa!');
-                renderOrders();
+                if (state.people.includes(name)) { showError('Tên đã tồn tại!'); return; }
+                state.people.push(name);
+                localStorage.setItem('demoPeople', JSON.stringify(state.people));
+                showSuccess('Đã thêm!');
+                $('inputNewPerson').value = '';
+                renderSelects(); renderPeopleList();
             } else {
-                const result = await callApi('deleteOrder', { id });
-                if (result && result.success) {
-                    showSuccess('Đã xóa!');
-                    await loadData();
-                } else {
-                    showError('Lỗi: ' + (result?.error || 'Không thể xóa'));
-                }
+                const result = await callApi('addPerson', { name });
+                if (result?.success) { showSuccess('Đã thêm!'); $('inputNewPerson').value = ''; await loadData(); renderPeopleList(); }
+                else showError('Lỗi: ' + (result?.error || 'Unknown'));
             }
         }
 
-        // ============ EVENT LISTENERS ============
+        function openEditPerson(name) { $('editPersonOld').value = name; $('editPersonNew').value = name; $('modalEditPerson').classList.remove('hidden'); }
+
+        async function saveEditPerson() {
+            const oldName = $('editPersonOld').value, newName = $('editPersonNew').value.trim();
+            if (!newName) { showError('Nhập tên!'); return; }
+            if (state.isDemo) {
+                const idx = state.people.indexOf(oldName);
+                if (idx !== -1) state.people[idx] = newName;
+                localStorage.setItem('demoPeople', JSON.stringify(state.people));
+                showSuccess('Đã cập nhật!');
+                closeModal('modalEditPerson');
+                renderSelects(); renderPeopleList();
+            } else {
+                const result = await callApi('updatePerson', { oldName, newName });
+                if (result?.success) { showSuccess('Đã cập nhật!'); closeModal('modalEditPerson'); await loadData(); renderPeopleList(); }
+                else showError('Lỗi: ' + (result?.error || 'Unknown'));
+            }
+        }
+
+        async function deletePerson(name) {
+            if (!confirm(`Xóa "${name}"?`)) return;
+            if (state.isDemo) { state.people = state.people.filter(p => p !== name); localStorage.setItem('demoPeople', JSON.stringify(state.people)); showSuccess('Đã xóa!'); renderSelects(); renderPeopleList(); }
+            else { const result = await callApi('deletePerson', { name }); if (result?.success) { showSuccess('Đã xóa!'); await loadData(); renderPeopleList(); } else showError('Lỗi: ' + (result?.error || 'Unknown')); }
+        }
+
+        // ============ MENU FUNCTIONS ============
+        async function addMenuItem() {
+            const dish = $('inputNewDish').value.trim(), variant = $('inputNewVariant').value.trim(), price = parseInt($('inputNewPrice').value) || 0;
+            if (!dish || !variant) { showError('Nhập đủ thông tin!'); return; }
+            if (state.isDemo) {
+                if (state.variants.find(v => v.variant === variant)) { showError('Biến thể đã tồn tại!'); return; }
+                state.variants.push({ dish, variant, price });
+                if (!state.dishes.includes(dish)) state.dishes.push(dish);
+                localStorage.setItem('demoVariants', JSON.stringify(state.variants));
+                localStorage.setItem('demoDishes', JSON.stringify(state.dishes));
+                showSuccess('Đã thêm!');
+                $('inputNewDish').value = ''; $('inputNewVariant').value = ''; $('inputNewPrice').value = '';
+                renderSelects(); renderMenuList();
+            } else {
+                const result = await callApi('addMenuItem', { dish, variant, price });
+                if (result?.success) { showSuccess('Đã thêm!'); $('inputNewDish').value = ''; $('inputNewVariant').value = ''; $('inputNewPrice').value = ''; await loadData(); renderMenuList(); }
+                else showError('Lỗi: ' + (result?.error || 'Unknown'));
+            }
+        }
+
+        function openEditMenuItem(variantName) {
+            const item = state.variants.find(v => v.variant === variantName);
+            if (!item) return;
+            $('editMenuOldVariant').value = variantName;
+            $('editMenuDish').value = item.dish;
+            $('editMenuVariant').value = item.variant;
+            $('editMenuPrice').value = item.price;
+            $('modalEditMenu').classList.remove('hidden');
+        }
+
+        async function saveEditMenuItem() {
+            const oldVariant = $('editMenuOldVariant').value;
+            const dish = $('editMenuDish').value.trim(), variant = $('editMenuVariant').value.trim(), price = parseInt($('editMenuPrice').value) || 0;
+            if (!dish || !variant) { showError('Nhập đủ thông tin!'); return; }
+            if (state.isDemo) {
+                const idx = state.variants.findIndex(v => v.variant === oldVariant);
+                if (idx !== -1) state.variants[idx] = { dish, variant, price };
+                if (!state.dishes.includes(dish)) state.dishes.push(dish);
+                localStorage.setItem('demoVariants', JSON.stringify(state.variants));
+                localStorage.setItem('demoDishes', JSON.stringify(state.dishes));
+                showSuccess('Đã cập nhật!');
+                closeModal('modalEditMenu');
+                renderSelects(); renderMenuList();
+            } else {
+                const result = await callApi('updateMenuItem', { oldVariant, dish, variant, price });
+                if (result?.success) { showSuccess('Đã cập nhật!'); closeModal('modalEditMenu'); await loadData(); renderMenuList(); }
+                else showError('Lỗi: ' + (result?.error || 'Unknown'));
+            }
+        }
+
+        async function deleteMenuItem(variant) {
+            if (!confirm(`Xóa "${variant}"?`)) return;
+            if (state.isDemo) { state.variants = state.variants.filter(v => v.variant !== variant); localStorage.setItem('demoVariants', JSON.stringify(state.variants)); showSuccess('Đã xóa!'); renderMenuList(); }
+            else { const result = await callApi('deleteMenuItem', { variant }); if (result?.success) { showSuccess('Đã xóa!'); await loadData(); renderMenuList(); } else showError('Lỗi: ' + (result?.error || 'Unknown')); }
+        }
+
+        // ============ EVENTS ============
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
-            $('selectPerson').addEventListener('change', updateSubmitButton);
-            $('selectDish').addEventListener('change', function() {
-                renderVariantOptions(this.value);
-                $('selectVariant').value = '';
-                updatePrice();
-                updateSubmitButton();
-            });
-            $('selectVariant').addEventListener('change', function() { updatePrice(); updateSubmitButton(); });
+            $('selectPerson').addEventListener('change', updateSubmitBtn);
+            $('selectDish').addEventListener('change', function() { renderVariantOptions(this.value); $('selectVariant').value = ''; updatePrice(); updateSubmitBtn(); });
+            $('selectVariant').addEventListener('change', function() { updatePrice(); updateSubmitBtn(); });
             $('selectQuantity').addEventListener('change', updatePrice);
-            $('btnSubmit').addEventListener('click', submitOrder);
         });
     </script>
 </body>
