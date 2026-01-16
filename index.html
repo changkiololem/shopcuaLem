@@ -6,26 +6,18 @@
     <title>🍜 Đặt Cơm Trưa</title>
     <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             font-family: 'Be Vietnam Pro', sans-serif;
             background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fecaca 100%);
             min-height: 100vh;
         }
-
-        /* Header */
         .header {
             background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
             color: white;
             padding: 1.25rem 1rem;
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
         }
-
         .header-content {
             max-width: 900px;
             margin: 0 auto;
@@ -33,29 +25,11 @@
             align-items: center;
             gap: 0.75rem;
         }
-
-        .header-icon {
-            font-size: 2.5rem;
-        }
-
-        .header h1 {
-            font-size: 1.5rem;
-            font-weight: 700;
-        }
-
-        .header p {
-            font-size: 0.75rem;
-            opacity: 0.9;
-        }
-
-        /* Main */
-        .main {
-            max-width: 900px;
-            margin: 0 auto;
-            padding: 1rem;
-        }
-
-        /* Alert */
+        .header-icon { font-size: 2.5rem; }
+        .header h1 { font-size: 1.5rem; font-weight: 700; }
+        .header p { font-size: 0.75rem; opacity: 0.9; }
+        .main { max-width: 900px; margin: 0 auto; padding: 1rem; }
+        
         .alert {
             padding: 0.75rem 1rem;
             border-radius: 0.5rem;
@@ -65,35 +39,11 @@
             gap: 0.5rem;
             font-size: 0.875rem;
         }
-
-        .alert-info {
-            background: #dbeafe;
-            border-left: 4px solid #3b82f6;
-            color: #1e40af;
-        }
-
-        .alert-success {
-            background: #dcfce7;
-            border-left: 4px solid #22c55e;
-            color: #166534;
-        }
-
-        .alert-error {
-            background: #fee2e2;
-            border-left: 4px solid #ef4444;
-            color: #991b1b;
-        }
-
-        .alert-close {
-            margin-left: auto;
-            background: none;
-            border: none;
-            cursor: pointer;
-            font-size: 1rem;
-            opacity: 0.7;
-        }
-
-        /* Card */
+        .alert-info { background: #dbeafe; border-left: 4px solid #3b82f6; color: #1e40af; }
+        .alert-success { background: #dcfce7; border-left: 4px solid #22c55e; color: #166534; }
+        .alert-error { background: #fee2e2; border-left: 4px solid #ef4444; color: #991b1b; }
+        .alert-close { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 1rem; opacity: 0.7; }
+        
         .card {
             background: white;
             border-radius: 1rem;
@@ -101,7 +51,6 @@
             overflow: hidden;
             margin-bottom: 1rem;
         }
-
         .card-header {
             padding: 1rem 1.25rem;
             color: white;
@@ -110,48 +59,14 @@
             align-items: center;
             gap: 0.5rem;
         }
-
-        .card-header-orange {
-            background: linear-gradient(135deg, #fb923c 0%, #f87171 100%);
-        }
-
-        .card-header-blue {
-            background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
-        }
-
-        .card-header-purple {
-            background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%);
-        }
-
-        .card-body {
-            padding: 1.25rem;
-        }
-
-        /* Form */
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 1rem;
-        }
-
-        @media (max-width: 600px) {
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
-
-        .form-label {
-            display: block;
-            font-size: 0.75rem;
-            font-weight: 600;
-            color: #4b5563;
-            margin-bottom: 0.375rem;
-        }
-
+        .card-header-orange { background: linear-gradient(135deg, #fb923c 0%, #f87171 100%); }
+        .card-header-blue { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); }
+        .card-body { padding: 1.25rem; }
+        
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+        @media (max-width: 600px) { .form-grid { grid-template-columns: 1fr; } }
+        .form-group { margin-bottom: 1rem; }
+        .form-label { display: block; font-size: 0.75rem; font-weight: 600; color: #4b5563; margin-bottom: 0.375rem; }
         .form-select, .form-input {
             width: 100%;
             padding: 0.75rem 1rem;
@@ -162,20 +77,14 @@
             background: #f9fafb;
             transition: all 0.2s;
         }
-
         .form-select:focus, .form-input:focus {
             outline: none;
             border-color: #f97316;
             background: white;
             box-shadow: 0 0 0 4px rgba(249, 115, 22, 0.1);
         }
-
-        .form-select:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        /* Price Display */
+        .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
+        
         .price-display {
             background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%);
             border: 2px solid #86efac;
@@ -186,24 +95,10 @@
             align-items: center;
             margin-bottom: 1rem;
         }
-
-        .price-label {
-            font-size: 0.875rem;
-            color: #4b5563;
-        }
-
-        .price-unit {
-            font-weight: 700;
-            color: #15803d;
-        }
-
-        .price-total {
-            font-size: 1.5rem;
-            font-weight: 700;
-            color: #16a34a;
-        }
-
-        /* Buttons */
+        .price-label { font-size: 0.875rem; color: #4b5563; }
+        .price-unit { font-weight: 700; color: #15803d; }
+        .price-total { font-size: 1.5rem; font-weight: 700; color: #16a34a; }
+        
         .btn {
             padding: 0.875rem 1.5rem;
             border: none;
@@ -218,33 +113,18 @@
             justify-content: center;
             gap: 0.5rem;
         }
-
         .btn-primary {
             background: linear-gradient(135deg, #f97316 0%, #ef4444 100%);
             color: white;
             flex: 1;
         }
-
         .btn-primary:hover:not(:disabled) {
             transform: translateY(-2px);
             box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4);
         }
-
-        .btn-primary:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-        }
-
-        .btn-secondary {
-            background: white;
-            color: #4b5563;
-            border: 2px solid #d1d5db;
-        }
-
-        .btn-secondary:hover {
-            background: #f3f4f6;
-        }
-
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-secondary { background: white; color: #4b5563; border: 2px solid #d1d5db; }
+        .btn-secondary:hover { background: #f3f4f6; }
         .btn-icon {
             padding: 0.5rem;
             background: transparent;
@@ -254,43 +134,15 @@
             font-size: 1rem;
             transition: all 0.2s;
         }
-
-        .btn-icon-edit:hover {
-            background: #dbeafe;
-        }
-
-        .btn-icon-delete:hover {
-            background: #fee2e2;
-        }
-
-        .btn-group {
-            display: flex;
-            gap: 0.75rem;
-        }
-
-        /* Table */
-        .orders-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            width: 100%;
-        }
-
-        .orders-total {
-            font-weight: 700;
-        }
-
-        .orders-empty {
-            text-align: center;
-            padding: 3rem 1rem;
-            color: #9ca3af;
-        }
-
-        .orders-empty-icon {
-            font-size: 3rem;
-            margin-bottom: 0.5rem;
-        }
-
+        .btn-icon-edit:hover { background: #dbeafe; }
+        .btn-icon-delete:hover { background: #fee2e2; }
+        .btn-group { display: flex; gap: 0.75rem; }
+        
+        .orders-header { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+        .orders-total { font-weight: 700; }
+        .orders-empty { text-align: center; padding: 3rem 1rem; color: #9ca3af; }
+        .orders-empty-icon { font-size: 3rem; margin-bottom: 0.5rem; }
+        
         .order-item {
             display: flex;
             align-items: center;
@@ -301,132 +153,56 @@
             margin-bottom: 0.5rem;
             transition: all 0.2s;
         }
-
-        .order-item:hover {
-            background: #fff7ed;
-        }
-
-        .order-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .order-name {
-            font-weight: 600;
-            color: #1f2937;
-            font-size: 0.875rem;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-        }
-
-        .order-qty {
-            background: #fed7aa;
-            color: #c2410c;
-            padding: 0.125rem 0.5rem;
-            border-radius: 1rem;
-            font-size: 0.75rem;
-            font-weight: 600;
-        }
-
-        .order-variant {
-            font-size: 0.75rem;
-            color: #6b7280;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .order-note {
-            font-size: 0.7rem;
-            color: #9ca3af;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-        }
-
-        .order-price {
-            font-weight: 700;
-            color: #16a34a;
-            font-size: 0.875rem;
-            text-align: right;
-        }
-
-        .order-actions {
-            display: flex;
-            gap: 0.25rem;
-        }
-
-        /* Loading */
-        .loading {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-        }
-
-        .spinner {
-            width: 3rem;
-            height: 3rem;
-            border: 4px solid #fed7aa;
-            border-top-color: #f97316;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* Instructions */
-        .instructions {
-            font-size: 0.8rem;
-            color: #4b5563;
-            line-height: 1.6;
-        }
-
-        .instructions h3 {
-            font-size: 0.875rem;
-            color: #1f2937;
-            margin: 1rem 0 0.5rem;
-        }
-
-        .instructions ul {
-            margin-left: 1.25rem;
-        }
-
-        .instructions code {
-            background: #f3f4f6;
-            padding: 0.125rem 0.375rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-        }
-
-        /* Footer */
-        .footer {
-            background: #1f2937;
-            color: #9ca3af;
-            text-align: center;
+        .order-item:hover { background: #fff7ed; }
+        .order-info { flex: 1; min-width: 0; }
+        .order-name { font-weight: 600; color: #1f2937; font-size: 0.875rem; display: flex; align-items: center; gap: 0.5rem; }
+        .order-qty { background: #fed7aa; color: #c2410c; padding: 0.125rem 0.5rem; border-radius: 1rem; font-size: 0.75rem; font-weight: 600; }
+        .order-variant { font-size: 0.75rem; color: #6b7280; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .order-note { font-size: 0.7rem; color: #9ca3af; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .order-price { font-weight: 700; color: #16a34a; font-size: 0.875rem; text-align: right; }
+        .order-actions { display: flex; gap: 0.25rem; }
+        
+        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .spinner { width: 3rem; height: 3rem; border: 4px solid #fed7aa; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 1rem; font-size: 0.75rem; margin-top: 2rem; }
+        .hidden { display: none !important; }
+        
+        .config-box {
+            background: #fef3c7;
+            border: 2px dashed #f59e0b;
+            border-radius: 0.75rem;
             padding: 1rem;
+            margin-bottom: 1rem;
+        }
+        .config-box input {
+            width: 100%;
+            padding: 0.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-family: monospace;
             font-size: 0.75rem;
-            margin-top: 2rem;
+            margin: 0.5rem 0;
         }
-
-        /* Hidden */
-        .hidden {
-            display: none !important;
+        .config-box button {
+            background: #f59e0b;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 0.5rem;
+            cursor: pointer;
+            font-weight: 600;
         }
+        .config-box button:hover { background: #d97706; }
     </style>
 </head>
 <body>
-    <!-- Loading -->
     <div id="loading" class="loading">
         <div class="spinner"></div>
         <p style="margin-top: 1rem; color: #c2410c;">Đang tải dữ liệu...</p>
     </div>
 
-    <!-- App -->
     <div id="app" class="hidden">
         <header class="header">
             <div class="header-content">
@@ -439,12 +215,27 @@
         </header>
 
         <main class="main">
+            <!-- Config Box -->
+            <div id="configBox" class="config-box">
+                <strong>⚙️ Cấu hình Google Sheet</strong>
+                <p style="font-size: 0.75rem; color: #92400e; margin-top: 0.5rem;">
+                    Dán URL Google Apps Script vào đây (lấy sau khi Deploy Web App):
+                </p>
+                <input type="text" id="scriptUrlInput" placeholder="https://script.google.com/macros/s/xxx.../exec">
+                <button onclick="saveScriptUrl()">💾 Lưu & Kết nối</button>
+                <button onclick="clearScriptUrl()" style="background: #6b7280; margin-left: 0.5rem;">🗑️ Xóa</button>
+            </div>
+
             <!-- Demo Alert -->
-            <div id="demoAlert" class="alert alert-info">
+            <div id="demoAlert" class="alert alert-info hidden">
                 <span>💡</span>
-                <div>
-                    <strong>Chế độ Demo</strong> - Dữ liệu lưu tạm thời. Xem hướng dẫn kết nối Google Sheet bên dưới.
-                </div>
+                <div><strong>Chế độ Demo</strong> - Dữ liệu lưu tạm thời trong trình duyệt.</div>
+            </div>
+
+            <!-- Connected Alert -->
+            <div id="connectedAlert" class="alert alert-success hidden">
+                <span>✅</span>
+                <div><strong>Đã kết nối Google Sheet!</strong> - Dữ liệu sẽ được lưu vào Sheet.</div>
             </div>
 
             <!-- Success Alert -->
@@ -520,12 +311,8 @@
                     </div>
 
                     <div class="btn-group">
-                        <button id="btnSubmit" class="btn btn-primary" disabled>
-                            🛒 Đặt món
-                        </button>
-                        <button id="btnCancel" class="btn btn-secondary hidden" onclick="resetForm()">
-                            Hủy
-                        </button>
+                        <button id="btnSubmit" class="btn btn-primary" disabled>🛒 Đặt món</button>
+                        <button id="btnCancel" class="btn btn-secondary hidden" onclick="resetForm()">Hủy</button>
                     </div>
                 </div>
             </div>
@@ -542,47 +329,12 @@
                     <div id="ordersList"></div>
                 </div>
             </div>
-
-            <!-- Instructions -->
-            <div id="instructionsCard" class="card">
-                <div class="card-header card-header-purple">
-                    ⚙️ Hướng dẫn kết nối Google Sheet
-                </div>
-                <div class="card-body instructions">
-                    <h3>Bước 1: Tạo Google Sheet</h3>
-                    <p>Tạo Google Sheet mới tại <a href="https://sheets.google.com" target="_blank">sheets.google.com</a></p>
-
-                    <h3>Bước 2: Thêm Google Apps Script</h3>
-                    <ul>
-                        <li>Vào <strong>Extensions → Apps Script</strong></li>
-                        <li>Dán code từ file <code>google-apps-script.js</code></li>
-                        <li>Chạy hàm <code>setupSheets()</code> để tạo cấu trúc</li>
-                    </ul>
-
-                    <h3>Bước 3: Deploy Web App</h3>
-                    <ul>
-                        <li>Nhấn <strong>Deploy → New deployment</strong></li>
-                        <li>Chọn <strong>Web app</strong></li>
-                        <li>Who has access: <strong>Anyone</strong></li>
-                        <li>Copy URL sau khi deploy</li>
-                    </ul>
-
-                    <h3>Bước 4: Cập nhật URL</h3>
-                    <p>Mở file HTML này, tìm dòng <code>const SCRIPT_URL = 'YOUR_SCRIPT_URL';</code> và thay bằng URL đã copy.</p>
-                </div>
-            </div>
         </main>
 
-        <footer class="footer">
-            🍜 Hệ thống đặt cơm trưa © 2024
-        </footer>
+        <footer class="footer">🍜 Hệ thống đặt cơm trưa © 2024</footer>
     </div>
 
     <script>
-        // ============ CẤU HÌNH ============
-        // Thay YOUR_SCRIPT_URL bằng URL của Google Apps Script sau khi deploy
-        const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzM3NQ9fuM-2O0vwfXpJI7ukh_cjyvdxewveTCGSgIlEyjDx2YaTPZMkGVYcb8VGqw/exec';
-
         // ============ DỮ LIỆU MẪU ============
         const MOCK_DATA = {
             people: ["Huyền", "Minh", "Lan", "Tuấn", "Hoa", "Nam", "Linh", "Đức", "Mai", "Phong"],
@@ -612,6 +364,7 @@
         };
 
         // ============ STATE ============
+        let SCRIPT_URL = localStorage.getItem('SCRIPT_URL') || '';
         let state = {
             people: [],
             dishes: [],
@@ -622,11 +375,34 @@
             isDemo: true
         };
 
-        // ============ DOM ELEMENTS ============
+        // ============ DOM ============
         const $ = id => document.getElementById(id);
-
-        // ============ UTILS ============
         const formatMoney = amount => new Intl.NumberFormat('vi-VN').format(amount) + ' đ';
+
+        // ============ CONFIG ============
+        function saveScriptUrl() {
+            const url = $('scriptUrlInput').value.trim();
+            if (!url) {
+                showError('Vui lòng nhập URL!');
+                return;
+            }
+            if (!url.startsWith('https://script.google.com/')) {
+                showError('URL không hợp lệ! Phải bắt đầu bằng https://script.google.com/');
+                return;
+            }
+            localStorage.setItem('SCRIPT_URL', url);
+            SCRIPT_URL = url;
+            showSuccess('Đã lưu URL! Đang kết nối...');
+            loadData();
+        }
+
+        function clearScriptUrl() {
+            localStorage.removeItem('SCRIPT_URL');
+            SCRIPT_URL = '';
+            $('scriptUrlInput').value = '';
+            showSuccess('Đã xóa cấu hình. Chuyển sang chế độ Demo.');
+            loadData();
+        }
 
         // ============ ALERTS ============
         function showSuccess(msg) {
@@ -634,53 +410,101 @@
             $('successAlert').classList.remove('hidden');
             setTimeout(hideSuccess, 3000);
         }
-
-        function hideSuccess() {
-            $('successAlert').classList.add('hidden');
-        }
-
+        function hideSuccess() { $('successAlert').classList.add('hidden'); }
         function showError(msg) {
             $('errorMessage').textContent = msg;
             $('errorAlert').classList.remove('hidden');
         }
+        function hideError() { $('errorAlert').classList.add('hidden'); }
 
-        function hideError() {
-            $('errorAlert').classList.add('hidden');
+        // ============ API CALLS ============
+        async function callApi(action, data = {}) {
+            if (!SCRIPT_URL) return null;
+            
+            try {
+                let url = SCRIPT_URL;
+                let options = {};
+
+                if (action === 'getData') {
+                    // GET request
+                    url += '?action=getData';
+                    options = { method: 'GET' };
+                } else {
+                    // POST request - sử dụng redirect: 'follow'
+                    options = {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                        body: JSON.stringify({ action, ...data }),
+                        redirect: 'follow'
+                    };
+                }
+
+                const response = await fetch(url, options);
+                const text = await response.text();
+                
+                try {
+                    return JSON.parse(text);
+                } catch {
+                    console.error('Invalid JSON response:', text);
+                    return { success: false, error: 'Invalid response from server' };
+                }
+            } catch (err) {
+                console.error('API Error:', err);
+                return { success: false, error: err.message };
+            }
         }
 
         // ============ DATA LOADING ============
         async function loadData() {
-            if (SCRIPT_URL === 'YOUR_SCRIPT_URL') {
+            hideError();
+            
+            // Hiển thị URL đã lưu
+            if (SCRIPT_URL) {
+                $('scriptUrlInput').value = SCRIPT_URL;
+            }
+
+            if (!SCRIPT_URL) {
                 // Demo mode
                 state.isDemo = true;
-                state.people = MOCK_DATA.people;
-                state.dishes = MOCK_DATA.dishes;
-                state.variants = MOCK_DATA.variants;
-                state.orders = MOCK_DATA.orders;
+                state.people = [...MOCK_DATA.people];
+                state.dishes = [...MOCK_DATA.dishes];
+                state.variants = [...MOCK_DATA.variants];
+                
+                // Load orders từ localStorage
+                const savedOrders = localStorage.getItem('demoOrders');
+                state.orders = savedOrders ? JSON.parse(savedOrders) : [];
                 
                 $('demoAlert').classList.remove('hidden');
-                $('instructionsCard').classList.remove('hidden');
-                $('headerSubtitle').textContent = 'Demo - Dữ liệu lưu tạm thời';
+                $('connectedAlert').classList.add('hidden');
+                $('configBox').classList.remove('hidden');
+                $('headerSubtitle').textContent = 'Chế độ Demo - Dữ liệu lưu trong trình duyệt';
             } else {
-                try {
+                // Connected mode
+                const result = await callApi('getData');
+                
+                if (result && result.success) {
                     state.isDemo = false;
-                    const response = await fetch(`${SCRIPT_URL}?action=getData`);
-                    const data = await response.json();
+                    state.people = result.people || [];
+                    state.dishes = result.dishes || [];
+                    state.variants = result.variants || [];
+                    state.orders = result.orders || [];
                     
-                    if (data.success) {
-                        state.people = data.people || [];
-                        state.dishes = data.dishes || [];
-                        state.variants = data.variants || [];
-                        state.orders = data.orders || [];
-                        
-                        $('demoAlert').classList.add('hidden');
-                        $('instructionsCard').classList.add('hidden');
-                        $('headerSubtitle').textContent = 'Hệ thống đặt món nhanh chóng & tiện lợi';
-                    } else {
-                        showError('Không thể tải dữ liệu: ' + data.error);
-                    }
-                } catch (err) {
-                    showError('Lỗi kết nối: ' + err.message);
+                    $('demoAlert').classList.add('hidden');
+                    $('connectedAlert').classList.remove('hidden');
+                    $('configBox').classList.add('hidden');
+                    $('headerSubtitle').textContent = 'Đã kết nối Google Sheet';
+                } else {
+                    showError('Không thể kết nối Google Sheet: ' + (result?.error || 'Unknown error'));
+                    // Fallback to demo
+                    state.isDemo = true;
+                    state.people = [...MOCK_DATA.people];
+                    state.dishes = [...MOCK_DATA.dishes];
+                    state.variants = [...MOCK_DATA.variants];
+                    state.orders = [];
+                    
+                    $('demoAlert').classList.remove('hidden');
+                    $('connectedAlert').classList.add('hidden');
+                    $('configBox').classList.remove('hidden');
                 }
             }
 
@@ -712,12 +536,7 @@
         function renderVariantOptions(dish) {
             const select = $('selectVariant');
             select.innerHTML = '<option value="">-- Chọn biến thể --</option>';
-            
-            if (!dish) {
-                select.disabled = true;
-                return;
-            }
-
+            if (!dish) { select.disabled = true; return; }
             const filtered = state.variants.filter(v => v.dish === dish);
             filtered.forEach(v => {
                 select.innerHTML += `<option value="${v.variant}">${v.variant}</option>`;
@@ -727,14 +546,8 @@
 
         function renderOrders() {
             const container = $('ordersList');
-            
             if (state.orders.length === 0) {
-                container.innerHTML = `
-                    <div class="orders-empty">
-                        <div class="orders-empty-icon">🍽️</div>
-                        <p>Chưa có đơn hàng nào</p>
-                    </div>
-                `;
+                container.innerHTML = `<div class="orders-empty"><div class="orders-empty-icon">🍽️</div><p>Chưa có đơn hàng nào</p></div>`;
                 $('orderCount').textContent = '0';
                 $('grandTotal').textContent = '';
                 return;
@@ -742,30 +555,23 @@
 
             let html = '';
             let total = 0;
-
             state.orders.forEach(order => {
                 const orderTotal = order.total || (order.price * order.quantity);
                 total += orderTotal;
-                
                 html += `
                     <div class="order-item">
                         <div class="order-info">
-                            <div class="order-name">
-                                ${order.person}
-                                <span class="order-qty">x${order.quantity}</span>
-                            </div>
+                            <div class="order-name">${order.person}<span class="order-qty">x${order.quantity}</span></div>
                             <div class="order-variant">${order.variant}</div>
                             ${order.note ? `<div class="order-note">📝 ${order.note}</div>` : ''}
                         </div>
                         <div class="order-price">${formatMoney(orderTotal)}</div>
                         <div class="order-actions">
-                            <button class="btn-icon btn-icon-edit" onclick="editOrder('${order.id}')" title="Chỉnh sửa">✏️</button>
+                            <button class="btn-icon btn-icon-edit" onclick="editOrder('${order.id}')" title="Sửa">✏️</button>
                             <button class="btn-icon btn-icon-delete" onclick="deleteOrder('${order.id}')" title="Xóa">🗑️</button>
                         </div>
-                    </div>
-                `;
+                    </div>`;
             });
-
             container.innerHTML = html;
             $('orderCount').textContent = state.orders.length;
             $('grandTotal').textContent = 'Tổng: ' + formatMoney(total);
@@ -774,16 +580,9 @@
         function updatePrice() {
             const variant = $('selectVariant').value;
             const quantity = parseInt($('selectQuantity').value) || 1;
-
-            if (!variant) {
-                state.currentPrice = 0;
-                $('priceDisplay').classList.add('hidden');
-                return;
-            }
-
+            if (!variant) { state.currentPrice = 0; $('priceDisplay').classList.add('hidden'); return; }
             const found = state.variants.find(v => v.variant === variant);
             state.currentPrice = found ? found.price : 0;
-
             $('unitPrice').textContent = formatMoney(state.currentPrice);
             $('totalPrice').textContent = formatMoney(state.currentPrice * quantity);
             $('priceDisplay').classList.remove('hidden');
@@ -793,7 +592,6 @@
             const person = $('selectPerson').value;
             const dish = $('selectDish').value;
             const variant = $('selectVariant').value;
-            
             $('btnSubmit').disabled = !person || !dish || !variant;
         }
 
@@ -828,135 +626,98 @@
 
             const orderData = {
                 id: state.editingId || Date.now().toString(),
-                person,
-                dish,
-                variant,
-                quantity,
+                person, dish, variant, quantity,
                 price: state.currentPrice,
                 total: state.currentPrice * quantity,
                 note,
                 timestamp: new Date().toISOString()
             };
 
+            $('btnSubmit').disabled = true;
+            $('btnSubmit').textContent = '⏳ Đang lưu...';
+
             if (state.isDemo) {
-                // Demo mode - save locally
+                // Demo mode
                 if (state.editingId) {
                     const idx = state.orders.findIndex(o => o.id === state.editingId);
                     if (idx !== -1) state.orders[idx] = orderData;
-                    showSuccess('Đã cập nhật đơn hàng!');
+                    showSuccess('Đã cập nhật!');
                 } else {
                     state.orders.push(orderData);
                     showSuccess('Đặt món thành công!');
                 }
+                // Lưu vào localStorage
+                localStorage.setItem('demoOrders', JSON.stringify(state.orders));
                 renderOrders();
                 resetForm();
-                return;
-            }
+            } else {
+                // Real mode
+                const action = state.editingId ? 'updateOrder' : 'addOrder';
+                const result = await callApi(action, { order: orderData });
 
-            // Real mode - save to Google Sheet
-            $('btnSubmit').disabled = true;
-            $('btnSubmit').textContent = '⏳ Đang lưu...';
-
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        action: state.editingId ? 'updateOrder' : 'addOrder',
-                        order: orderData
-                    })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showSuccess(state.editingId ? 'Đã cập nhật đơn hàng!' : 'Đặt món thành công!');
+                if (result && result.success) {
+                    showSuccess(state.editingId ? 'Đã cập nhật!' : 'Đặt món thành công!');
                     await loadData();
                     resetForm();
                 } else {
-                    showError('Lỗi: ' + result.error);
+                    showError('Lỗi: ' + (result?.error || 'Không thể lưu'));
+                    $('btnSubmit').disabled = false;
+                    $('btnSubmit').textContent = state.editingId ? '💾 Cập nhật' : '🛒 Đặt món';
                 }
-            } catch (err) {
-                showError('Lỗi kết nối: ' + err.message);
             }
-
-            $('btnSubmit').disabled = false;
-            $('btnSubmit').textContent = state.editingId ? '💾 Cập nhật' : '🛒 Đặt món';
         }
 
         function editOrder(id) {
-            const order = state.orders.find(o => o.id === id);
+            const order = state.orders.find(o => o.id === id || o.id === String(id));
             if (!order) return;
-
-            state.editingId = id;
+            state.editingId = order.id;
             $('selectPerson').value = order.person;
             $('selectDish').value = order.dish;
             renderVariantOptions(order.dish);
-            
             setTimeout(() => {
                 $('selectVariant').value = order.variant;
                 updatePrice();
             }, 50);
-
             $('selectQuantity').value = order.quantity;
             $('inputNote').value = order.note || '';
-            
-            $('formTitle').textContent = '✏️ Chỉnh sửa đơn hàng';
+            $('formTitle').textContent = '✏️ Chỉnh sửa';
             $('btnSubmit').textContent = '💾 Cập nhật';
             $('btnCancel').classList.remove('hidden');
-            
             window.scrollTo({ top: 0, behavior: 'smooth' });
             updateSubmitButton();
         }
 
         async function deleteOrder(id) {
-            if (!confirm('Bạn có chắc muốn xóa đơn hàng này?')) return;
+            if (!confirm('Xóa đơn hàng này?')) return;
 
             if (state.isDemo) {
-                state.orders = state.orders.filter(o => o.id !== id);
-                showSuccess('Đã xóa đơn hàng!');
+                state.orders = state.orders.filter(o => o.id !== id && o.id !== String(id));
+                localStorage.setItem('demoOrders', JSON.stringify(state.orders));
+                showSuccess('Đã xóa!');
                 renderOrders();
-                return;
-            }
-
-            try {
-                const response = await fetch(SCRIPT_URL, {
-                    method: 'POST',
-                    body: JSON.stringify({ action: 'deleteOrder', id })
-                });
-
-                const result = await response.json();
-
-                if (result.success) {
-                    showSuccess('Đã xóa đơn hàng!');
+            } else {
+                const result = await callApi('deleteOrder', { id });
+                if (result && result.success) {
+                    showSuccess('Đã xóa!');
                     await loadData();
                 } else {
-                    showError('Lỗi: ' + result.error);
+                    showError('Lỗi: ' + (result?.error || 'Không thể xóa'));
                 }
-            } catch (err) {
-                showError('Lỗi kết nối: ' + err.message);
             }
         }
 
         // ============ EVENT LISTENERS ============
         document.addEventListener('DOMContentLoaded', () => {
             loadData();
-
             $('selectPerson').addEventListener('change', updateSubmitButton);
-            
             $('selectDish').addEventListener('change', function() {
                 renderVariantOptions(this.value);
                 $('selectVariant').value = '';
                 updatePrice();
                 updateSubmitButton();
             });
-
-            $('selectVariant').addEventListener('change', function() {
-                updatePrice();
-                updateSubmitButton();
-            });
-
+            $('selectVariant').addEventListener('change', function() { updatePrice(); updateSubmitButton(); });
             $('selectQuantity').addEventListener('change', updatePrice);
-
             $('btnSubmit').addEventListener('click', submitOrder);
         });
     </script>
