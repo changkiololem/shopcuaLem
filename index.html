@@ -396,7 +396,7 @@
 
         // ============ CONFIG ============
         function saveScriptUrl() {
-            const url = $('scriptUrlInput').value.trim();
+            const url = $('https://script.google.com/macros/s/AKfycbyFFsXvRlIq886F00OOiVHQYJ88Qjc7WF_FkJvNdFWu927xD_YjVVR44ag6Ni_EUo43LQ/exec').value.trim();
             if (!url) { showError('Vui lòng nhập URL!'); return; }
             if (!url.startsWith('https://script.google.com/')) { showError('URL không hợp lệ!'); return; }
             localStorage.setItem('SCRIPT_URL', url);
