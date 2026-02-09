@@ -1,0 +1,949 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🍜 Đặt Cơm Trưa</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Be Vietnam Pro', sans-serif; background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 50%, #fecaca 100%); min-height: 100vh; }
+        
+        .header { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); color: white; padding: 0.75rem 1rem; box-shadow: 0 4px 20px rgba(0,0,0,0.15); }
+        .header-content { max-width: 1000px; margin: 0 auto; display: flex; align-items: center; gap: 0.75rem; }
+        .header-icon { font-size: 1.75rem; }
+        .header h1 { font-size: 1.1rem; font-weight: 700; }
+        .header p { font-size: 0.65rem; opacity: 0.9; }
+        .user-info { margin-left: auto; display: flex; align-items: center; gap: 0.5rem; font-size: 0.75rem; }
+        .user-badge { background: rgba(255,255,255,0.2); padding: 0.25rem 0.5rem; border-radius: 1rem; font-size: 0.65rem; }
+        .user-badge.admin { background: #fbbf24; color: #78350f; }
+        .btn-logout { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.3rem 0.6rem; border-radius: 0.25rem; cursor: pointer; font-size: 0.7rem; }
+        .btn-logout:hover { background: rgba(255,255,255,0.3); }
+        
+        /* Announcement Ticker */
+        .announcement-bar { background: linear-gradient(135deg, #1e40af 0%, #3b82f6 100%); color: white; padding: 0.5rem 0; overflow: hidden; }
+        .announcement-ticker { display: flex; animation: ticker 20s linear infinite; white-space: nowrap; }
+        .announcement-item { padding: 0 3rem; font-size: 0.8rem; display: flex; align-items: center; gap: 0.5rem; }
+        @keyframes ticker { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
+        .announcement-bar:hover .announcement-ticker { animation-play-state: paused; }
+        
+        .tabs { max-width: 1000px; margin: 0 auto; padding: 0.75rem 1rem 0; }
+        .tab-buttons { display: flex; gap: 0.2rem; flex-wrap: wrap; }
+        .tab-btn { padding: 0.5rem 0.75rem; border: none; background: rgba(255,255,255,0.7); border-radius: 0.4rem 0.4rem 0 0; font-family: inherit; font-weight: 600; cursor: pointer; color: #6b7280; transition: all 0.2s; font-size: 0.7rem; }
+        .tab-btn:hover { background: #fff7ed; color: #ea580c; }
+        .tab-btn.active { background: white; color: #ea580c; }
+        .tab-btn.admin-only { border: 2px dashed #f59e0b; }
+        .tab-content { display: none; background: white; border-radius: 0 0.4rem 0.4rem 0.4rem; padding: 0.875rem; box-shadow: 0 10px 40px rgba(0,0,0,0.1); }
+        .tab-content.active { display: block; }
+        
+        .main { max-width: 1000px; margin: 0 auto; padding: 0 1rem 1rem; }
+        
+        .alert { padding: 0.5rem 0.75rem; border-radius: 0.4rem; margin-bottom: 0.6rem; display: flex; align-items: center; gap: 0.4rem; font-size: 0.7rem; }
+        .alert-success { background: #dcfce7; border-left: 4px solid #22c55e; color: #166534; }
+        .alert-error { background: #fee2e2; border-left: 4px solid #ef4444; color: #991b1b; }
+        .alert-close { margin-left: auto; background: none; border: none; cursor: pointer; font-size: 0.9rem; }
+        
+        .card { background: #f9fafb; border-radius: 0.4rem; overflow: hidden; margin-bottom: 0.6rem; }
+        .card-header { padding: 0.6rem 0.875rem; color: white; font-weight: 700; font-size: 0.75rem; display: flex; align-items: center; gap: 0.4rem; }
+        .card-header-orange { background: linear-gradient(135deg, #fb923c 0%, #f87171 100%); }
+        .card-header-blue { background: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%); }
+        .card-header-green { background: linear-gradient(135deg, #22c55e 0%, #10b981 100%); }
+        .card-header-purple { background: linear-gradient(135deg, #a855f7 0%, #ec4899 100%); }
+        .card-header-cyan { background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%); }
+        .card-body { padding: 0.75rem; background: white; }
+        
+        .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 0.5rem; }
+        .form-group { margin-bottom: 0.5rem; }
+        .form-label { display: block; font-size: 0.6rem; font-weight: 600; color: #4b5563; margin-bottom: 0.15rem; }
+        .form-select, .form-input { width: 100%; padding: 0.45rem 0.5rem; border: 2px solid #e5e7eb; border-radius: 0.3rem; font-size: 0.7rem; font-family: inherit; background: #f9fafb; transition: all 0.2s; }
+        .form-select:focus, .form-input:focus { outline: none; border-color: #f97316; background: white; }
+        .form-select:disabled { opacity: 0.5; cursor: not-allowed; }
+        
+        .price-display { background: linear-gradient(135deg, #dcfce7 0%, #d1fae5 100%); border: 2px solid #86efac; border-radius: 0.3rem; padding: 0.5rem; display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem; }
+        .price-label { font-size: 0.7rem; color: #4b5563; }
+        .price-unit { font-weight: 700; color: #15803d; }
+        .price-total { font-size: 1rem; font-weight: 700; color: #16a34a; }
+        
+        .btn { padding: 0.45rem 0.75rem; border: none; border-radius: 0.3rem; font-size: 0.7rem; font-weight: 600; font-family: inherit; cursor: pointer; transition: all 0.2s; display: inline-flex; align-items: center; justify-content: center; gap: 0.25rem; }
+        .btn-primary { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); color: white; }
+        .btn-primary:hover:not(:disabled) { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4); }
+        .btn-primary:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-secondary { background: white; color: #4b5563; border: 2px solid #d1d5db; }
+        .btn-secondary:hover { background: #f3f4f6; }
+        .btn-success { background: #22c55e; color: white; }
+        .btn-success:hover { background: #16a34a; }
+        .btn-danger { background: #ef4444; color: white; }
+        .btn-danger:hover { background: #dc2626; }
+        .btn-sm { padding: 0.25rem 0.4rem; font-size: 0.65rem; }
+        .btn-group { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+        
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; font-size: 0.7rem; }
+        th, td { padding: 0.4rem 0.5rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+        th { background: #f3f4f6; font-weight: 600; color: #374151; font-size: 0.65rem; }
+        tr:hover { background: #fff7ed; }
+        .text-right { text-align: right; }
+        .text-center { text-align: center; }
+        .text-green { color: #16a34a; font-weight: 700; }
+        
+        .order-item { display: flex; align-items: center; gap: 0.4rem; padding: 0.4rem; background: #f9fafb; border-radius: 0.3rem; margin-bottom: 0.25rem; }
+        .order-item:hover { background: #fff7ed; }
+        .order-item.own-order { border-left: 3px solid #f97316; }
+        .order-info { flex: 1; min-width: 0; }
+        .order-name { font-weight: 600; color: #1f2937; font-size: 0.7rem; display: flex; align-items: center; gap: 0.25rem; }
+        .order-qty { background: #fed7aa; color: #c2410c; padding: 0.1rem 0.25rem; border-radius: 1rem; font-size: 0.55rem; font-weight: 600; }
+        .order-variant { font-size: 0.6rem; color: #6b7280; }
+        .order-note { font-size: 0.55rem; color: #9ca3af; }
+        .order-price { font-weight: 700; color: #16a34a; font-size: 0.7rem; }
+        .order-actions { display: flex; gap: 0.15rem; }
+        
+        .empty { text-align: center; padding: 1.25rem 0.75rem; color: #9ca3af; }
+        .empty-icon { font-size: 1.75rem; margin-bottom: 0.3rem; }
+        
+        .stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(100px, 1fr)); gap: 0.6rem; margin-bottom: 0.75rem; }
+        .stat-card { background: white; border-radius: 0.4rem; padding: 0.75rem; text-align: center; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .stat-value { font-size: 1.2rem; font-weight: 700; color: #f97316; }
+        .stat-label { font-size: 0.6rem; color: #6b7280; margin-top: 0.15rem; }
+        
+        .bank-card { background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%); border-radius: 0.6rem; padding: 0.875rem; color: white; margin-bottom: 0.75rem; }
+        .bank-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.6rem; }
+        .bank-title { font-weight: 700; font-size: 0.8rem; }
+        .bank-edit { background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.25rem 0.5rem; border-radius: 0.2rem; cursor: pointer; font-size: 0.65rem; }
+        .bank-edit:hover { background: rgba(255,255,255,0.3); }
+        .bank-content { display: flex; gap: 0.875rem; flex-wrap: wrap; align-items: flex-start; }
+        .bank-qr { width: 100px; height: 100px; background: white; border-radius: 0.4rem; display: flex; align-items: center; justify-content: center; overflow: hidden; }
+        .bank-qr img { width: 100%; height: 100%; object-fit: contain; }
+        .bank-qr-placeholder { color: #9ca3af; font-size: 0.6rem; text-align: center; padding: 0.4rem; }
+        .bank-info { flex: 1; min-width: 180px; }
+        .bank-row { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid rgba(255,255,255,0.2); font-size: 0.75rem; }
+        .bank-row:last-child { border-bottom: none; }
+        .bank-label { opacity: 0.8; }
+        .bank-value { font-weight: 600; }
+        
+        .payment-card { background: white; border-radius: 0.4rem; overflow: hidden; margin-bottom: 0.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); transition: all 0.2s; }
+        .payment-card.paid { opacity: 0.7; }
+        .payment-card.own-payment { border: 2px solid #f97316; }
+        .payment-header { padding: 0.6rem 0.875rem; font-weight: 700; font-size: 0.8rem; display: flex; justify-content: space-between; align-items: center; gap: 0.4rem; flex-wrap: wrap; }
+        .payment-header-unpaid { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #78350f; }
+        .payment-header-paid { background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%); color: white; }
+        .payment-header-confirmed { background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%); color: white; }
+        .payment-body { padding: 0.6rem 0.875rem; }
+        .payment-item { display: flex; justify-content: space-between; padding: 0.3rem 0; border-bottom: 1px solid #f3f4f6; font-size: 0.7rem; }
+        .payment-item:last-child { border-bottom: none; }
+        .payment-actions { display: flex; gap: 0.3rem; align-items: center; flex-wrap: wrap; }
+        .payment-checkbox { width: 1.1rem; height: 1.1rem; cursor: pointer; accent-color: #22c55e; }
+        .payment-checkbox.admin-confirm { accent-color: #3b82f6; }
+        .payment-status { font-size: 0.6rem; padding: 0.15rem 0.4rem; border-radius: 1rem; }
+        .status-paid { background: #dcfce7; color: #166534; }
+        .status-unpaid { background: #fef3c7; color: #92400e; }
+        .status-confirmed { background: #dbeafe; color: #1e40af; }
+        
+        .price-card { background: white; border-radius: 0.4rem; overflow: hidden; margin-bottom: 0.6rem; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .price-card-header { background: linear-gradient(135deg, #f97316 0%, #fb923c 100%); color: white; padding: 0.5rem 0.75rem; font-weight: 700; font-size: 0.8rem; }
+        .price-item { display: flex; justify-content: space-between; padding: 0.4rem 0.75rem; border-bottom: 1px solid #f3f4f6; font-size: 0.75rem; }
+        .price-item:last-child { border-bottom: none; }
+        .price-item:hover { background: #fff7ed; }
+        
+        /* Auth Pages */
+        .auth-container { min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 1rem; }
+        .auth-card { background: white; border-radius: 0.75rem; box-shadow: 0 20px 60px rgba(0,0,0,0.15); width: 100%; max-width: 360px; overflow: hidden; }
+        .auth-header { background: linear-gradient(135deg, #f97316 0%, #ef4444 100%); color: white; padding: 1.5rem; text-align: center; }
+        .auth-header-icon { font-size: 2.5rem; margin-bottom: 0.5rem; }
+        .auth-header h1 { font-size: 1.25rem; font-weight: 700; }
+        .auth-body { padding: 1.5rem; }
+        .auth-tabs { display: flex; margin-bottom: 1rem; }
+        .auth-tab { flex: 1; padding: 0.6rem; border: none; background: #f3f4f6; cursor: pointer; font-family: inherit; font-weight: 600; font-size: 0.8rem; color: #6b7280; }
+        .auth-tab:first-child { border-radius: 0.4rem 0 0 0.4rem; }
+        .auth-tab:last-child { border-radius: 0 0.4rem 0.4rem 0; }
+        .auth-tab.active { background: #f97316; color: white; }
+        .auth-form { display: none; }
+        .auth-form.active { display: block; }
+        .auth-form .form-group { margin-bottom: 0.875rem; }
+        .auth-form .form-label { font-size: 0.75rem; }
+        .auth-form .form-input { padding: 0.6rem 0.75rem; font-size: 0.85rem; }
+        .auth-form .btn { width: 100%; padding: 0.75rem; font-size: 0.9rem; }
+        
+        .loading { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; }
+        .spinner { width: 2.5rem; height: 2.5rem; border: 4px solid #fed7aa; border-top-color: #f97316; border-radius: 50%; animation: spin 1s linear infinite; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        
+        .footer { background: #1f2937; color: #9ca3af; text-align: center; padding: 0.5rem; font-size: 0.6rem; margin-top: 0.75rem; }
+        .hidden { display: none !important; }
+        
+        .modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); display: flex; align-items: center; justify-content: center; z-index: 1000; }
+        .modal-content { background: white; border-radius: 0.5rem; width: 90%; max-width: 380px; max-height: 90vh; overflow-y: auto; }
+        .modal-header { padding: 0.75rem; border-bottom: 1px solid #e5e7eb; font-weight: 700; font-size: 0.85rem; display: flex; justify-content: space-between; align-items: center; }
+        .modal-body { padding: 0.75rem; }
+        .modal-footer { padding: 0.75rem; border-top: 1px solid #e5e7eb; display: flex; gap: 0.3rem; justify-content: flex-end; }
+        
+        .dish-badge { display: inline-block; padding: 0.1rem 0.35rem; background: #e0e7ff; color: #4338ca; border-radius: 0.2rem; font-size: 0.6rem; font-weight: 600; }
+        .role-badge { padding: 0.15rem 0.4rem; border-radius: 1rem; font-size: 0.6rem; font-weight: 600; }
+        .role-admin { background: #fef3c7; color: #92400e; }
+        .role-user { background: #e0e7ff; color: #4338ca; }
+    </style>
+</head>
+<body>
+    <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p style="margin-top: 1rem; color: #c2410c; font-size: 0.8rem;">Đang tải...</p>
+    </div>
+
+    <!-- AUTH PAGE -->
+    <div id="authPage" class="auth-container hidden">
+        <div class="auth-card">
+            <div class="auth-header">
+                <div class="auth-header-icon">🍜</div>
+                <h1>Đặt Cơm Trưa</h1>
+            </div>
+            <div class="auth-body">
+                <div class="auth-tabs">
+                    <button class="auth-tab active" onclick="showAuthTab('login')">Đăng nhập</button>
+                    <button class="auth-tab" onclick="showAuthTab('register')">Đăng ký</button>
+                </div>
+                <div id="authAlert" class="alert alert-error hidden"><span id="authAlertMsg"></span></div>
+                
+                <form id="loginForm" class="auth-form active" onsubmit="handleLogin(event)">
+                    <div class="form-group"><label class="form-label">Tên đăng nhập</label><input type="text" id="loginUsername" class="form-input" required></div>
+                    <div class="form-group"><label class="form-label">Mật khẩu</label><input type="password" id="loginPassword" class="form-input" required></div>
+                    <div class="form-group" style="display:flex;align-items:center;gap:0.5rem">
+                        <input type="checkbox" id="rememberMe" style="width:1rem;height:1rem;accent-color:#f97316">
+                        <label for="rememberMe" style="font-size:0.8rem;color:#4b5563;cursor:pointer">Ghi nhớ đăng nhập (30 ngày)</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">🔐 Đăng nhập</button>
+                </form>
+                
+                <form id="registerForm" class="auth-form" onsubmit="handleRegister(event)">
+                    <div class="form-group"><label class="form-label">Tên hiển thị</label><input type="text" id="regName" class="form-input" required></div>
+                    <div class="form-group"><label class="form-label">Tên đăng nhập (ít nhất 3 ký tự)</label><input type="text" id="regUsername" class="form-input" minlength="3" required></div>
+                    <div class="form-group"><label class="form-label">Mật khẩu (ít nhất 4 ký tự)</label><input type="password" id="regPassword" class="form-input" minlength="4" required></div>
+                    <button type="submit" class="btn btn-primary">📝 Đăng ký</button>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- MAIN APP -->
+    <div id="app" class="hidden">
+        <header class="header">
+            <div class="header-content">
+                <span class="header-icon">🍜</span>
+                <div>
+                    <h1>Đặt Cơm Trưa</h1>
+                    <p id="headerSubtitle">Đang kết nối...</p>
+                </div>
+                <div class="user-info">
+                    <span id="userName"></span>
+                    <span id="userBadge" class="user-badge"></span>
+                    <button class="btn-logout" onclick="openProfileModal()">⚙️</button>
+                    <button class="btn-logout" onclick="logout()">🚪</button>
+                </div>
+            </div>
+        </header>
+
+        <div id="announcementBar" class="announcement-bar hidden">
+            <div class="announcement-ticker" id="announcementTicker"></div>
+        </div>
+
+        <div class="tabs">
+            <div class="tab-buttons">
+                <button class="tab-btn active" onclick="showTab('order')">🛒 Đặt món</button>
+                <button class="tab-btn" onclick="showTab('summary')">📊 Tổng hợp</button>
+                <button class="tab-btn" onclick="showTab('payment')">💳 Thanh toán</button>
+                <button class="tab-btn" onclick="showTab('price')">💰 Bảng giá</button>
+                <button id="tabManage" class="tab-btn admin-only hidden" onclick="showTab('manage')">👑 Quản lý</button>
+            </div>
+        </div>
+
+        <main class="main">
+            <div id="successAlert" class="alert alert-success hidden"><span>✅</span><span id="successMessage"></span><button class="alert-close" onclick="hideSuccess()">✕</button></div>
+            <div id="errorAlert" class="alert alert-error hidden"><span>⚠️</span><span id="errorMessage"></span><button class="alert-close" onclick="hideError()">✕</button></div>
+
+            <!-- TAB 1: ĐẶT MÓN -->
+            <div id="tab-order" class="tab-content active">
+                <div class="card">
+                    <div class="card-header card-header-orange"><span id="formTitle">📝 Đặt món mới</span></div>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="form-group"><label class="form-label">🍽️ Món ăn</label><select id="selectDish" class="form-select"><option value="">-- Chọn --</option></select></div>
+                            <div class="form-group"><label class="form-label">🥢 Biến thể</label><select id="selectVariant" class="form-select" disabled><option value="">-- Chọn --</option></select></div>
+                            <div class="form-group"><label class="form-label">🔢 Số lượng</label><select id="selectQuantity" class="form-select"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option></select></div>
+                        </div>
+                        <div id="priceDisplay" class="price-display hidden"><div><span class="price-label">Đơn giá: </span><span id="unitPrice" class="price-unit">0 đ</span></div><div id="totalPrice" class="price-total">0 đ</div></div>
+                        <div class="form-group"><label class="form-label">📝 Ghi chú</label><input type="text" id="inputNote" class="form-input" placeholder="Ít cơm, thêm rau..."></div>
+                        <div class="btn-group"><button id="btnSubmit" class="btn btn-primary" disabled onclick="submitOrder()">🛒 Đặt món</button><button id="btnCancel" class="btn btn-secondary hidden" onclick="resetOrderForm()">Hủy</button></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-blue"><span>📋 Đã đặt (<span id="orderCount">0</span>)</span><span style="margin-left:auto" id="grandTotal"></span></div>
+                    <div class="card-body" id="ordersList"></div>
+                </div>
+            </div>
+
+            <!-- TAB 2: TỔNG HỢP -->
+            <div id="tab-summary" class="tab-content">
+                <div class="stat-grid" id="statCards"></div>
+                <div class="card">
+                    <div class="card-header card-header-cyan">📊 Tổng hợp theo món</div>
+                    <div class="card-body"><div class="table-container"><table><thead><tr><th>Món</th><th>Biến thể</th><th class="text-center">SL</th><th class="text-right">Đơn giá</th><th class="text-right">Thành tiền</th></tr></thead><tbody id="summaryTable"></tbody><tfoot id="summaryFooter"></tfoot></table></div></div>
+                </div>
+            </div>
+
+            <!-- TAB 3: THANH TOÁN -->
+            <div id="tab-payment" class="tab-content">
+                <div class="bank-card">
+                    <div class="bank-header">
+                        <span class="bank-title">🏦 Thông tin chuyển khoản</span>
+                        <button id="btnEditBank" class="bank-edit hidden" onclick="openBankModal()">✏️ Sửa</button>
+                    </div>
+                    <div class="bank-content">
+                        <div class="bank-qr" id="bankQrContainer"><div class="bank-qr-placeholder">Chưa có QR</div></div>
+                        <div class="bank-info">
+                            <div class="bank-row"><span class="bank-label">Ngân hàng:</span><span class="bank-value" id="bankName">-</span></div>
+                            <div class="bank-row"><span class="bank-label">Số tài khoản:</span><span class="bank-value" id="bankAccount">-</span></div>
+                            <div class="bank-row"><span class="bank-label">Chủ TK:</span><span class="bank-value" id="bankOwner">-</span></div>
+                            <div class="bank-row"><span class="bank-label">Nội dung:</span><span class="bank-value" id="bankNote">-</span></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="stat-grid">
+                    <div class="stat-card"><div class="stat-value" id="paymentTotalPeople">0</div><div class="stat-label">Người đặt</div></div>
+                    <div class="stat-card"><div class="stat-value text-green" id="paymentPaidCount">0</div><div class="stat-label">Đã TT</div></div>
+                    <div class="stat-card"><div class="stat-value" style="color:#3b82f6" id="paymentConfirmedCount">0</div><div class="stat-label">Xác nhận</div></div>
+                    <div class="stat-card"><div class="stat-value text-green" id="paymentTotalAmount">0đ</div><div class="stat-label">Tổng tiền</div></div>
+                </div>
+                <div id="btnResetPayments" class="hidden" style="margin-bottom:0.6rem;text-align:right"><button class="btn btn-sm btn-secondary" onclick="resetAllPayments()">🔄 Reset tất cả</button></div>
+                <div id="paymentList"></div>
+            </div>
+
+            <!-- TAB 4: BẢNG GIÁ -->
+            <div id="tab-price" class="tab-content">
+                <div id="priceListContainer"></div>
+            </div>
+
+            <!-- TAB 5: QUẢN LÝ (ADMIN) -->
+            <div id="tab-manage" class="tab-content">
+                <div class="card">
+                    <div class="card-header card-header-purple">📢 Quản lý thông báo</div>
+                    <div class="card-body">
+                        <div class="form-grid" style="margin-bottom:0.5rem">
+                            <input type="text" id="inputAnnouncement" class="form-input" placeholder="Nhập nội dung thông báo..." style="grid-column: span 2">
+                            <button class="btn btn-success" onclick="addAnnouncement()">➕ Thêm</button>
+                        </div>
+                        <div class="table-container"><table><thead><tr><th>Nội dung</th><th style="width:60px" class="text-center">Xóa</th></tr></thead><tbody id="announcementList"></tbody></table></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-green">🍽️ Quản lý món ăn</div>
+                    <div class="card-body">
+                        <div class="form-grid" style="margin-bottom:0.5rem">
+                            <input type="text" id="inputNewDish" class="form-input" placeholder="Món chính...">
+                            <input type="text" id="inputNewVariant" class="form-input" placeholder="Biến thể...">
+                            <input type="number" id="inputNewPrice" class="form-input" placeholder="Giá">
+                            <button class="btn btn-success" onclick="addMenuItem()">➕ Thêm</button>
+                        </div>
+                        <div class="table-container"><table><thead><tr><th>Món</th><th>Biến thể</th><th class="text-right">Giá</th><th style="width:70px" class="text-center">Thao tác</th></tr></thead><tbody id="menuList"></tbody></table></div>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-header card-header-cyan">👥 Quản lý tài khoản</div>
+                    <div class="card-body">
+                        <div class="table-container"><table><thead><tr><th>Tên</th><th>Username</th><th>Quyền</th><th style="width:70px" class="text-center">Thao tác</th></tr></thead><tbody id="userList"></tbody></table></div>
+                    </div>
+                </div>
+            </div>
+        </main>
+        <footer class="footer">🍜 Hệ thống đặt cơm trưa © 2024</footer>
+    </div>
+
+    <!-- Modals -->
+    <div id="modalProfile" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">⚙️ Thông tin tài khoản<button onclick="closeModal('modalProfile')" style="background:none;border:none;font-size:1rem;cursor:pointer">✕</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Tên hiển thị</label><input type="text" id="profileName" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Tên đăng nhập</label><input type="text" id="profileUsername" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Mật khẩu mới (để trống nếu không đổi)</label><input type="password" id="profilePassword" class="form-input" placeholder="••••••"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalProfile')">Hủy</button><button class="btn btn-primary" onclick="saveProfile()">💾 Lưu</button></div>
+        </div>
+    </div>
+    <div id="modalBank" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">🏦 Thông tin tài khoản<button onclick="closeModal('modalBank')" style="background:none;border:none;font-size:1rem;cursor:pointer">✕</button></div>
+            <div class="modal-body">
+                <div class="form-group"><label class="form-label">Tên ngân hàng</label><input type="text" id="inputBankName" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Số tài khoản</label><input type="text" id="inputBankAccount" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Chủ tài khoản</label><input type="text" id="inputBankOwner" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Nội dung CK</label><input type="text" id="inputBankNote" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Link QR</label><input type="text" id="inputBankQr" class="form-input"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalBank')">Hủy</button><button class="btn btn-primary" onclick="saveBankInfo()">💾 Lưu</button></div>
+        </div>
+    </div>
+    <div id="modalEditMenu" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">✏️ Sửa món<button onclick="closeModal('modalEditMenu')" style="background:none;border:none;font-size:1rem;cursor:pointer">✕</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="editMenuOldVariant">
+                <div class="form-group"><label class="form-label">Món chính</label><input type="text" id="editMenuDish" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Biến thể</label><input type="text" id="editMenuVariant" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Giá</label><input type="number" id="editMenuPrice" class="form-input"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalEditMenu')">Hủy</button><button class="btn btn-primary" onclick="saveEditMenuItem()">💾 Lưu</button></div>
+        </div>
+    </div>
+    <div id="modalEditUser" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">✏️ Sửa tài khoản<button onclick="closeModal('modalEditUser')" style="background:none;border:none;font-size:1rem;cursor:pointer">✕</button></div>
+            <div class="modal-body">
+                <input type="hidden" id="editUserId">
+                <div class="form-group"><label class="form-label">Tên hiển thị</label><input type="text" id="editUserName" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Tên đăng nhập</label><input type="text" id="editUserUsername" class="form-input"></div>
+                <div class="form-group"><label class="form-label">Mật khẩu mới</label><input type="password" id="editUserPassword" class="form-input" placeholder="Để trống nếu không đổi"></div>
+            </div>
+            <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalEditUser')">Hủy</button><button class="btn btn-primary" onclick="saveEditUser()">💾 Lưu</button></div>
+        </div>
+    </div>
+
+<script>
+// ╔════════════════════════════════════════════════════════════════╗
+// ║  CẤU HÌNH: DÁN URL GOOGLE APPS SCRIPT VÀO ĐÂY                  ║
+// ╚════════════════════════════════════════════════════════════════╝
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1Cl3shl6QoKgFPVIyxucs3MI557s2ypW2UrT2i4dqMcjcfUDFbwha0jsq5tszWx9W5Q/exec';
+
+// ============ STATE ============
+let currentUser = null;
+let state = { users: [], dishes: [], variants: [], orders: [], payments: {}, bankInfo: {}, announcements: [], currentPrice: 0, editingOrderId: null };
+const $ = id => document.getElementById(id);
+const formatMoney = n => new Intl.NumberFormat('vi-VN').format(n) + ' đ';
+const isAdmin = () => currentUser?.role === 'admin';
+
+// ============ COOKIE UTILITIES ============
+function setCookie(name, value, days) {
+    let expires = '';
+    if (days) {
+        const date = new Date();
+        date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+        expires = '; expires=' + date.toUTCString();
+    }
+    document.cookie = name + '=' + encodeURIComponent(JSON.stringify(value)) + expires + '; path=/; SameSite=Strict';
+}
+
+function getCookie(name) {
+    const nameEQ = name + '=';
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+        let c = ca[i];
+        while (c.charAt(0) === ' ') c = c.substring(1);
+        if (c.indexOf(nameEQ) === 0) {
+            try {
+                return JSON.parse(decodeURIComponent(c.substring(nameEQ.length)));
+            } catch (e) {
+                return null;
+            }
+        }
+    }
+    return null;
+}
+
+function deleteCookie(name) {
+    document.cookie = name + '=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
+}
+
+// ============ INIT ============
+document.addEventListener('DOMContentLoaded', () => {
+    // Ưu tiên đọc từ cookie, fallback sang localStorage
+    const savedCookie = getCookie('currentUser');
+    const savedLocal = localStorage.getItem('currentUser');
+    
+    if (savedCookie) {
+        currentUser = savedCookie;
+        loadData();
+    } else if (savedLocal) {
+        currentUser = JSON.parse(savedLocal);
+        loadData();
+    } else {
+        $('loading').classList.add('hidden');
+        $('authPage').classList.remove('hidden');
+    }
+    
+    $('selectDish').addEventListener('change', function() { renderVariantOptions(this.value); $('selectVariant').value = ''; updatePrice(); updateSubmitBtn(); });
+    $('selectVariant').addEventListener('change', function() { updatePrice(); updateSubmitBtn(); });
+    $('selectQuantity').addEventListener('change', updatePrice);
+});
+
+// ============ AUTH ============
+function showAuthTab(tab) {
+    document.querySelectorAll('.auth-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.auth-form').forEach(f => f.classList.remove('active'));
+    document.querySelector(`.auth-tab:${tab === 'login' ? 'first' : 'last'}-child`).classList.add('active');
+    $(`${tab}Form`).classList.add('active');
+    $('authAlert').classList.add('hidden');
+}
+
+async function handleLogin(e) {
+    e.preventDefault();
+    const username = $('loginUsername').value.trim();
+    const password = $('loginPassword').value;
+    const rememberMe = $('rememberMe').checked;
+    
+    const result = await callApi('login', { username, password });
+    if (result?.success) {
+        currentUser = result.user;
+        
+        // Lưu vào cookie nếu chọn "Ghi nhớ đăng nhập"
+        if (rememberMe) {
+            setCookie('currentUser', currentUser, 30); // 30 ngày
+            localStorage.removeItem('currentUser'); // Xóa localStorage nếu có
+        } else {
+            // Lưu session cookie (hết hạn khi đóng trình duyệt)
+            setCookie('currentUser', currentUser, null);
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        }
+        
+        $('authPage').classList.add('hidden');
+        $('loading').classList.remove('hidden');
+        loadData();
+    } else {
+        $('authAlertMsg').textContent = result?.error || 'Đăng nhập thất bại';
+        $('authAlert').classList.remove('hidden');
+    }
+}
+
+async function handleRegister(e) {
+    e.preventDefault();
+    const name = $('regName').value.trim();
+    const username = $('regUsername').value.trim();
+    const password = $('regPassword').value;
+    
+    const result = await callApi('register', { name, username, password });
+    if (result?.success) {
+        currentUser = result.user;
+        // Lưu session cookie cho đăng ký mới
+        setCookie('currentUser', currentUser, null);
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        $('authPage').classList.add('hidden');
+        $('loading').classList.remove('hidden');
+        loadData();
+    } else {
+        $('authAlertMsg').textContent = result?.error || 'Đăng ký thất bại';
+        $('authAlert').classList.remove('hidden');
+    }
+}
+
+function logout() {
+    if (!confirm('Đăng xuất?')) return;
+    currentUser = null;
+    deleteCookie('currentUser');
+    localStorage.removeItem('currentUser');
+    location.reload();
+}
+
+// ============ API ============
+async function callApi(action, data = {}) {
+    if (!SCRIPT_URL || SCRIPT_URL === 'YOUR_SCRIPT_URL_HERE') return null;
+    try {
+        let url = SCRIPT_URL, options = {};
+        if (['getData', 'getMenu', 'getUsers', 'getBankInfo', 'getPayments', 'getAnnouncements'].includes(action)) {
+            url += '?action=' + action;
+            options = { method: 'GET', redirect: 'follow' };
+        } else {
+            options = { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify({ action, ...data }), redirect: 'follow' };
+        }
+        const response = await fetch(url, options);
+        const text = await response.text();
+        return JSON.parse(text);
+    } catch (err) { console.error('API Error:', err); return { success: false, error: err.message }; }
+}
+
+// ============ LOAD DATA ============
+async function loadData() {
+    const result = await callApi('getData');
+    if (result?.success) {
+        state.users = result.users || [];
+        state.dishes = result.dishes || [];
+        state.variants = result.variants || [];
+        state.orders = result.orders || [];
+        state.bankInfo = result.bankInfo || {};
+        state.payments = result.payments || {};
+        state.announcements = result.announcements || [];
+        $('headerSubtitle').textContent = isAdmin() ? '👑 Quản trị viên' : '✓ Đã kết nối';
+    } else {
+        showError('Không thể kết nối Google Sheet');
+    }
+    
+    setupUI();
+    renderSelects();
+    renderOrders();
+    renderBankInfo();
+    renderAnnouncements();
+    
+    $('loading').classList.add('hidden');
+    $('app').classList.remove('hidden');
+}
+
+function setupUI() {
+    $('userName').textContent = currentUser?.name || '';
+    $('userBadge').textContent = isAdmin() ? '👑 Admin' : '👤 User';
+    $('userBadge').className = 'user-badge' + (isAdmin() ? ' admin' : '');
+    
+    // Show/hide admin elements
+    if (isAdmin()) {
+        $('tabManage').classList.remove('hidden');
+        $('btnEditBank').classList.remove('hidden');
+        $('btnResetPayments').classList.remove('hidden');
+    }
+}
+
+// ============ TABS ============
+function showTab(tab) {
+    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+    document.querySelector(`[onclick="showTab('${tab}')"]`)?.classList.add('active');
+    $(`tab-${tab}`)?.classList.add('active');
+    if (tab === 'price') renderPriceList();
+    if (tab === 'summary') renderSummary();
+    if (tab === 'payment') renderPayment();
+    if (tab === 'manage' && isAdmin()) { renderMenuList(); renderUserList(); renderAnnouncementList(); }
+}
+
+// ============ ALERTS & MODALS ============
+function showSuccess(msg) { $('successMessage').textContent = msg; $('successAlert').classList.remove('hidden'); setTimeout(hideSuccess, 3000); }
+function hideSuccess() { $('successAlert').classList.add('hidden'); }
+function showError(msg) { $('errorMessage').textContent = msg; $('errorAlert').classList.remove('hidden'); }
+function hideError() { $('errorAlert').classList.add('hidden'); }
+function closeModal(id) { $(id).classList.add('hidden'); }
+
+// ============ PROFILE ============
+function openProfileModal() {
+    $('profileName').value = currentUser?.name || '';
+    $('profileUsername').value = currentUser?.username || '';
+    $('profilePassword').value = '';
+    $('modalProfile').classList.remove('hidden');
+}
+
+async function saveProfile() {
+    const name = $('profileName').value.trim();
+    const username = $('profileUsername').value.trim();
+    const password = $('profilePassword').value;
+    
+    const result = await callApi('updateProfile', { userId: currentUser.id, name, username, password: password || undefined });
+    if (result?.success) {
+        currentUser = result.user;
+        // Cập nhật cả cookie và localStorage
+        const existingCookie = getCookie('currentUser');
+        if (existingCookie) {
+            // Giữ nguyên thời hạn cookie cũ bằng cách set lại 30 ngày
+            setCookie('currentUser', currentUser, 30);
+        }
+        localStorage.setItem('currentUser', JSON.stringify(currentUser));
+        $('userName').textContent = currentUser.name;
+        closeModal('modalProfile');
+        showSuccess('Đã cập nhật!');
+    } else {
+        showError(result?.error || 'Lỗi cập nhật');
+    }
+}
+
+// ============ ANNOUNCEMENTS ============
+function renderAnnouncements() {
+    const active = state.announcements.filter(a => a.active);
+    if (active.length === 0) {
+        $('announcementBar').classList.add('hidden');
+        return;
+    }
+    $('announcementTicker').innerHTML = active.map(a => `<div class="announcement-item">📢 ${a.content}</div>`).join('');
+    $('announcementBar').classList.remove('hidden');
+}
+
+function renderAnnouncementList() {
+    $('announcementList').innerHTML = state.announcements.map(a => `<tr><td style="font-size:0.7rem">${a.content}</td><td class="text-center"><button class="btn btn-sm btn-danger" onclick="deleteAnnouncement('${a.id}')">🗑️</button></td></tr>`).join('') || '<tr><td colspan="2" class="text-center" style="color:#9ca3af">Chưa có</td></tr>';
+}
+
+async function addAnnouncement() {
+    const content = $('inputAnnouncement').value.trim();
+    if (!content) return showError('Nhập nội dung!');
+    const result = await callApi('saveAnnouncement', { adminId: currentUser.id, content, active: true });
+    if (result?.success) { showSuccess('Đã thêm!'); $('inputAnnouncement').value = ''; await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+async function deleteAnnouncement(id) {
+    if (!confirm('Xóa thông báo?')) return;
+    const result = await callApi('deleteAnnouncement', { adminId: currentUser.id, announcementId: id });
+    if (result?.success) { showSuccess('Đã xóa!'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+// ============ RENDER ============
+function renderSelects() {
+    $('selectDish').innerHTML = '<option value="">-- Chọn --</option>' + state.dishes.map(d => `<option value="${d}">${d}</option>`).join('');
+}
+
+function renderVariantOptions(dish) {
+    const select = $('selectVariant');
+    select.innerHTML = '<option value="">-- Chọn --</option>';
+    if (!dish) { select.disabled = true; return; }
+    state.variants.filter(v => v.dish === dish).forEach(v => { select.innerHTML += `<option value="${v.variant}">${v.variant}</option>`; });
+    select.disabled = false;
+}
+
+function renderOrders() {
+    const container = $('ordersList');
+    if (state.orders.length === 0) {
+        container.innerHTML = '<div class="empty"><div class="empty-icon">🍽️</div><p>Chưa có đơn hàng</p></div>';
+        $('orderCount').textContent = '0'; $('grandTotal').textContent = ''; return;
+    }
+    let html = '', total = 0;
+    state.orders.forEach(o => {
+        const t = o.total || o.price * o.quantity; total += t;
+        const isOwn = o.oderId === currentUser?.id;
+        const canEdit = isAdmin() || isOwn;
+        html += `<div class="order-item ${isOwn ? 'own-order' : ''}">
+            <div class="order-info"><div class="order-name">${o.person}<span class="order-qty">x${o.quantity}</span></div><div class="order-variant">${o.variant}</div>${o.note ? `<div class="order-note">📝 ${o.note}</div>` : ''}</div>
+            <div class="order-price">${formatMoney(t)}</div>
+            ${canEdit ? `<div class="order-actions"><button class="btn btn-sm btn-secondary" onclick="editOrder('${o.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteOrder('${o.id}')">🗑️</button></div>` : ''}
+        </div>`;
+    });
+    container.innerHTML = html;
+    $('orderCount').textContent = state.orders.length;
+    $('grandTotal').textContent = 'Tổng: ' + formatMoney(total);
+}
+
+function renderBankInfo() {
+    const info = state.bankInfo;
+    $('bankName').textContent = info.bankName || '-';
+    $('bankAccount').textContent = info.account || '-';
+    $('bankOwner').textContent = info.owner || '-';
+    $('bankNote').textContent = info.note || '-';
+    if (info.qrUrl) $('bankQrContainer').innerHTML = `<img src="${info.qrUrl}" alt="QR">`;
+    else $('bankQrContainer').innerHTML = '<div class="bank-qr-placeholder">Chưa có QR</div>';
+}
+
+function renderSummary() {
+    const totalOrders = state.orders.length;
+    const totalQty = state.orders.reduce((s, o) => s + o.quantity, 0);
+    const totalAmount = state.orders.reduce((s, o) => s + (o.total || o.price * o.quantity), 0);
+    const uniquePeople = [...new Set(state.orders.map(o => o.person))].length;
+    $('statCards').innerHTML = `<div class="stat-card"><div class="stat-value">${uniquePeople}</div><div class="stat-label">Người</div></div><div class="stat-card"><div class="stat-value">${totalOrders}</div><div class="stat-label">Đơn</div></div><div class="stat-card"><div class="stat-value">${totalQty}</div><div class="stat-label">Phần</div></div><div class="stat-card"><div class="stat-value text-green">${formatMoney(totalAmount)}</div><div class="stat-label">Tổng</div></div>`;
+    
+    const grouped = {};
+    state.orders.forEach(o => { const key = o.variant; if (!grouped[key]) grouped[key] = { dish: o.dish, variant: o.variant, price: o.price, qty: 0, total: 0 }; grouped[key].qty += o.quantity; grouped[key].total += o.total || o.price * o.quantity; });
+    const rows = Object.values(grouped).sort((a, b) => a.dish.localeCompare(b.dish));
+    $('summaryTable').innerHTML = rows.length ? rows.map(r => `<tr><td><span class="dish-badge">${r.dish}</span></td><td>${r.variant}</td><td class="text-center">${r.qty}</td><td class="text-right">${formatMoney(r.price)}</td><td class="text-right text-green">${formatMoney(r.total)}</td></tr>`).join('') : '<tr><td colspan="5" class="text-center" style="color:#9ca3af">Chưa có đơn</td></tr>';
+    $('summaryFooter').innerHTML = rows.length ? `<tr style="background:#fef3c7;font-weight:700"><td colspan="2">TỔNG</td><td class="text-center">${totalQty}</td><td></td><td class="text-right text-green">${formatMoney(totalAmount)}</td></tr>` : '';
+}
+
+function renderPayment() {
+    const byUser = {};
+    state.orders.forEach(o => {
+        const uid = o.oderId;
+        if (!byUser[uid]) byUser[uid] = { name: o.person, oderId: uid, orders: [], total: 0 };
+        byUser[uid].orders.push(o);
+        byUser[uid].total += o.total || o.price * o.quantity;
+    });
+    
+    const users = Object.values(byUser);
+    const totalAmount = users.reduce((s, u) => s + u.total, 0);
+    const paidCount = users.filter(u => state.payments[u.oderId]?.paid).length;
+    const confirmedCount = users.filter(u => state.payments[u.oderId]?.confirmed).length;
+    
+    $('paymentTotalPeople').textContent = users.length;
+    $('paymentPaidCount').textContent = paidCount;
+    $('paymentConfirmedCount').textContent = confirmedCount;
+    $('paymentTotalAmount').textContent = formatMoney(totalAmount);
+    
+    if (users.length === 0) { $('paymentList').innerHTML = '<div class="empty"><div class="empty-icon">💳</div><p>Chưa có đơn</p></div>'; return; }
+    
+    const sorted = users.sort((a, b) => {
+        const pa = state.payments[a.oderId], pb = state.payments[b.oderId];
+        if (pa?.confirmed && !pb?.confirmed) return 1;
+        if (!pa?.confirmed && pb?.confirmed) return -1;
+        if (pa?.paid && !pb?.paid) return 1;
+        return a.name.localeCompare(b.name);
+    });
+    
+    let html = '';
+    sorted.forEach(u => {
+        const p = state.payments[u.oderId] || {};
+        const isOwn = u.oderId === currentUser?.id;
+        const headerClass = p.confirmed ? 'payment-header-confirmed' : (p.paid ? 'payment-header-paid' : 'payment-header-unpaid');
+        
+        html += `<div class="payment-card ${p.paid ? 'paid' : ''} ${isOwn ? 'own-payment' : ''}">
+            <div class="payment-header ${headerClass}">
+                <span>👤 ${u.name} ${isOwn ? '(Bạn)' : ''}</span>
+                <div class="payment-actions">
+                    <span class="payment-status ${p.confirmed ? 'status-confirmed' : (p.paid ? 'status-paid' : 'status-unpaid')}">${p.confirmed ? '✓✓ Xác nhận' : (p.paid ? '✓ Đã TT' : '○ Chưa TT')}</span>
+                    <span style="font-weight:700;margin-left:0.3rem">${formatMoney(u.total)}</span>
+                    ${isOwn || isAdmin() ? `<input type="checkbox" class="payment-checkbox" ${p.paid ? 'checked' : ''} onchange="togglePayment('${u.oderId}', '${u.name}')" title="Đã thanh toán">` : ''}
+                    ${isAdmin() ? `<input type="checkbox" class="payment-checkbox admin-confirm" ${p.confirmed ? 'checked' : ''} onchange="adminConfirmPayment('${u.oderId}', this.checked)" title="Admin xác nhận">` : ''}
+                </div>
+            </div>
+            <div class="payment-body">${u.orders.map(o => `<div class="payment-item"><span>${o.variant} x${o.quantity}</span><span>${formatMoney(o.total || o.price * o.quantity)}</span></div>`).join('')}</div>
+        </div>`;
+    });
+    $('paymentList').innerHTML = html;
+}
+
+function renderPriceList() {
+    const grouped = {};
+    state.variants.forEach(v => { if (!grouped[v.dish]) grouped[v.dish] = []; grouped[v.dish].push(v); });
+    let html = '';
+    Object.keys(grouped).sort().forEach(dish => {
+        const items = grouped[dish].sort((a, b) => a.price - b.price);
+        html += `<div class="price-card"><div class="price-card-header">🍽️ ${dish}</div>${items.map(v => `<div class="price-item"><span>${v.variant}</span><span class="text-green">${formatMoney(v.price)}</span></div>`).join('')}</div>`;
+    });
+    $('priceListContainer').innerHTML = html || '<div class="empty"><div class="empty-icon">📋</div><p>Chưa có món</p></div>';
+}
+
+function renderMenuList() {
+    $('menuList').innerHTML = state.variants.map(v => `<tr><td><span class="dish-badge">${v.dish}</span></td><td>${v.variant}</td><td class="text-right text-green">${formatMoney(v.price)}</td><td class="text-center"><button class="btn btn-sm btn-secondary" onclick="openEditMenuItem('${v.variant}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteMenuItem('${v.variant}')">🗑️</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center" style="color:#9ca3af">Chưa có</td></tr>';
+}
+
+function renderUserList() {
+    $('userList').innerHTML = state.users.map(u => `<tr><td>${u.name}</td><td>${u.username}</td><td><span class="role-badge ${u.role === 'admin' ? 'role-admin' : 'role-user'}">${u.role === 'admin' ? '👑 Admin' : '👤 User'}</span></td><td class="text-center">${u.role !== 'admin' ? `<button class="btn btn-sm btn-secondary" onclick="openEditUser('${u.id}','${u.name}','${u.username}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteUser('${u.id}')">🗑️</button>` : '-'}</td></tr>`).join('');
+}
+
+// ============ ORDER FUNCTIONS ============
+function updatePrice() {
+    const variant = $('selectVariant').value, qty = parseInt($('selectQuantity').value) || 1;
+    if (!variant) { state.currentPrice = 0; $('priceDisplay').classList.add('hidden'); return; }
+    const found = state.variants.find(v => v.variant === variant);
+    state.currentPrice = found ? found.price : 0;
+    $('unitPrice').textContent = formatMoney(state.currentPrice);
+    $('totalPrice').textContent = formatMoney(state.currentPrice * qty);
+    $('priceDisplay').classList.remove('hidden');
+}
+
+function updateSubmitBtn() { $('btnSubmit').disabled = !$('selectDish').value || !$('selectVariant').value; }
+
+function resetOrderForm() {
+    state.editingOrderId = null;
+    $('selectDish').value = ''; $('selectVariant').value = ''; $('selectVariant').disabled = true;
+    $('selectQuantity').value = '1'; $('inputNote').value = ''; state.currentPrice = 0;
+    $('priceDisplay').classList.add('hidden'); $('formTitle').textContent = '📝 Đặt món mới';
+    $('btnSubmit').textContent = '🛒 Đặt món'; $('btnCancel').classList.add('hidden'); updateSubmitBtn();
+}
+
+async function submitOrder() {
+    const dish = $('selectDish').value, variant = $('selectVariant').value;
+    const qty = parseInt($('selectQuantity').value), note = $('inputNote').value;
+    if (!dish || !variant) return;
+    
+    const order = { id: state.editingOrderId || Date.now().toString(), oderId: currentUser.id, person: currentUser.name, dish, variant, quantity: qty, price: state.currentPrice, total: state.currentPrice * qty, note };
+    $('btnSubmit').disabled = true; $('btnSubmit').textContent = '⏳...';
+    
+    const action = state.editingOrderId ? 'updateOrder' : 'addOrder';
+    const result = await callApi(action, { order, userId: currentUser.id, isAdmin: isAdmin() });
+    if (result?.success) { showSuccess(state.editingOrderId ? 'Đã cập nhật!' : 'Đặt món thành công!'); await loadData(); resetOrderForm(); }
+    else { showError(result?.error || 'Lỗi'); $('btnSubmit').disabled = false; $('btnSubmit').textContent = state.editingOrderId ? '💾 Cập nhật' : '🛒 Đặt món'; }
+}
+
+function editOrder(id) {
+    const o = state.orders.find(x => x.id === id); if (!o) return;
+    state.editingOrderId = o.id; $('selectDish').value = o.dish;
+    renderVariantOptions(o.dish);
+    setTimeout(() => { $('selectVariant').value = o.variant; updatePrice(); }, 50);
+    $('selectQuantity').value = o.quantity; $('inputNote').value = o.note || '';
+    $('formTitle').textContent = '✏️ Chỉnh sửa'; $('btnSubmit').textContent = '💾 Cập nhật';
+    $('btnCancel').classList.remove('hidden'); updateSubmitBtn(); showTab('order');
+}
+
+async function deleteOrder(id) {
+    if (!confirm('Xóa đơn này?')) return;
+    const result = await callApi('deleteOrder', { id, userId: currentUser.id, isAdmin: isAdmin() });
+    if (result?.success) { showSuccess('Đã xóa!'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+// ============ PAYMENT FUNCTIONS ============
+async function togglePayment(oderId, userName) {
+    const current = state.payments[oderId]?.paid || false;
+    const result = await callApi('savePayment', { oderId, userName, paid: !current });
+    if (result?.success) await loadData();
+    else showError(result?.error || 'Lỗi');
+}
+
+async function adminConfirmPayment(oderId, confirmed) {
+    const result = await callApi('adminConfirmPayment', { adminId: currentUser.id, targetUserId: oderId, confirmed });
+    if (result?.success) await loadData();
+    else showError(result?.error || 'Lỗi');
+}
+
+async function resetAllPayments() {
+    if (!confirm('Reset tất cả trạng thái thanh toán?')) return;
+    const result = await callApi('resetPayments', { adminId: currentUser.id });
+    if (result?.success) { showSuccess('Đã reset!'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+// ============ BANK FUNCTIONS ============
+function openBankModal() {
+    $('inputBankName').value = state.bankInfo.bankName || '';
+    $('inputBankAccount').value = state.bankInfo.account || '';
+    $('inputBankOwner').value = state.bankInfo.owner || '';
+    $('inputBankNote').value = state.bankInfo.note || '';
+    $('inputBankQr').value = state.bankInfo.qrUrl || '';
+    $('modalBank').classList.remove('hidden');
+}
+
+async function saveBankInfo() {
+    const bankInfo = { bankName: $('inputBankName').value.trim(), account: $('inputBankAccount').value.trim(), owner: $('inputBankOwner').value.trim(), note: $('inputBankNote').value.trim(), qrUrl: $('inputBankQr').value.trim() };
+    const result = await callApi('saveBankInfo', { bankInfo });
+    if (result?.success) { showSuccess('Đã lưu!'); closeModal('modalBank'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+// ============ MENU FUNCTIONS ============
+async function addMenuItem() {
+    const dish = $('inputNewDish').value.trim(), variant = $('inputNewVariant').value.trim(), price = parseInt($('inputNewPrice').value) || 0;
+    if (!dish || !variant) return showError('Nhập đủ thông tin!');
+    const result = await callApi('addMenuItem', { dish, variant, price });
+    if (result?.success) { showSuccess('Đã thêm!'); $('inputNewDish').value = ''; $('inputNewVariant').value = ''; $('inputNewPrice').value = ''; await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+function openEditMenuItem(variantName) {
+    const item = state.variants.find(v => v.variant === variantName); if (!item) return;
+    $('editMenuOldVariant').value = variantName; $('editMenuDish').value = item.dish;
+    $('editMenuVariant').value = item.variant; $('editMenuPrice').value = item.price;
+    $('modalEditMenu').classList.remove('hidden');
+}
+
+async function saveEditMenuItem() {
+    const oldVariant = $('editMenuOldVariant').value, dish = $('editMenuDish').value.trim(), variant = $('editMenuVariant').value.trim(), price = parseInt($('editMenuPrice').value) || 0;
+    if (!dish || !variant) return showError('Nhập đủ thông tin!');
+    const result = await callApi('updateMenuItem', { oldVariant, dish, variant, price });
+    if (result?.success) { showSuccess('Đã cập nhật!'); closeModal('modalEditMenu'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+async function deleteMenuItem(variant) {
+    if (!confirm(`Xóa "${variant}"?`)) return;
+    const result = await callApi('deleteMenuItem', { variant });
+    if (result?.success) { showSuccess('Đã xóa!'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+// ============ USER FUNCTIONS ============
+function openEditUser(id, name, username) {
+    $('editUserId').value = id; $('editUserName').value = name; $('editUserUsername').value = username; $('editUserPassword').value = '';
+    $('modalEditUser').classList.remove('hidden');
+}
+
+async function saveEditUser() {
+    const userId = $('editUserId').value, name = $('editUserName').value.trim(), username = $('editUserUsername').value.trim(), password = $('editUserPassword').value;
+    const result = await callApi('adminUpdateUser', { adminId: currentUser.id, userId, name, username, password: password || undefined });
+    if (result?.success) { showSuccess('Đã cập nhật!'); closeModal('modalEditUser'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+
+async function deleteUser(userId) {
+    if (!confirm('Xóa tài khoản này?')) return;
+    const result = await callApi('adminDeleteUser', { adminId: currentUser.id, userId });
+    if (result?.success) { showSuccess('Đã xóa!'); await loadData(); }
+    else showError(result?.error || 'Lỗi');
+}
+</script>
+</body>
+</html>
