@@ -409,7 +409,7 @@
 // ╔════════════════════════════════════════════════════════════════╗
 // ║  CẤU HÌNH: DÁN URL GOOGLE APPS SCRIPT VÀO ĐÂY                  ║
 // ╚════════════════════════════════════════════════════════════════╝
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbz1Cl3shl6QoKgFPVIyxucs3MI557s2ypW2UrT2i4dqMcjcfUDFbwha0jsq5tszWx9W5Q/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbzfpykURidnnGgYZxzHn_xBHAbscoZ-8r1KK2FPV3s5AaViXS6_mGcy75Kl6Lz7szyc/exec';
 
 // ============ STATE ============
 let currentUser = null;
@@ -697,12 +697,23 @@ function renderOrders() {
     let html = '', total = 0;
     state.orders.forEach(o => {
         const t = o.total || o.price * o.quantity; total += t;
-        const isOwn = o.oderId === currentUser?.id;
+        const isOwn = String(o.oderId) === String(currentUser?.id);
         const canEdit = isAdmin() || isOwn;
+        
         html += `<div class="order-item ${isOwn ? 'own-order' : ''}">
-            <div class="order-info"><div class="order-name">${o.person}<span class="order-qty">x${o.quantity}</span></div><div class="order-variant">${o.variant}</div>${o.note ? `<div class="order-note">📝 ${o.note}</div>` : ''}</div>
+            <div class="order-info">
+                <div class="order-name">
+                    ${o.person} ${isOwn ? '<span style="color:#f97316;font-size:0.6rem">(Bạn)</span>' : ''}
+                    <span class="order-qty">x${o.quantity}</span>
+                </div>
+                <div class="order-variant">${o.variant}</div>
+                ${o.note ? `<div class="order-note">📝 ${o.note}</div>` : ''}
+            </div>
             <div class="order-price">${formatMoney(t)}</div>
-            ${canEdit ? `<div class="order-actions"><button class="btn btn-sm btn-secondary" onclick="editOrder('${o.id}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteOrder('${o.id}')">🗑️</button></div>` : ''}
+            ${canEdit ? `<div class="order-actions">
+                <button class="btn btn-sm btn-secondary" onclick="editOrder('${o.id}')" title="Sửa đơn">✏️</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteOrder('${o.id}')" title="Xóa đơn">🗑️</button>
+            </div>` : ''}
         </div>`;
     });
     container.innerHTML = html;
@@ -769,14 +780,36 @@ function renderPayment() {
         const isOwn = u.oderId === currentUser?.id;
         const headerClass = p.confirmed ? 'payment-header-confirmed' : (p.paid ? 'payment-header-paid' : 'payment-header-unpaid');
         
+        // Checkbox cho user tự check "Đã thanh toán"
+        let userCheckbox = '';
+        if (isOwn) {
+            userCheckbox = `
+                <label class="payment-checkbox-label" style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;background:rgba(255,255,255,0.3);padding:0.2rem 0.5rem;border-radius:0.25rem;">
+                    <input type="checkbox" class="payment-checkbox" ${p.paid ? 'checked' : ''} onchange="togglePayment('${u.oderId}', '${u.name}')" title="Đánh dấu đã thanh toán">
+                    <span style="font-size:0.65rem;font-weight:600">Đã TT</span>
+                </label>`;
+        } else if (isAdmin()) {
+            userCheckbox = `<input type="checkbox" class="payment-checkbox" ${p.paid ? 'checked' : ''} onchange="togglePayment('${u.oderId}', '${u.name}')" title="Đánh dấu đã thanh toán">`;
+        }
+        
+        // Checkbox admin xác nhận
+        let adminCheckbox = '';
+        if (isAdmin()) {
+            adminCheckbox = `
+                <label class="payment-checkbox-label" style="display:flex;align-items:center;gap:0.3rem;cursor:pointer;background:rgba(59,130,246,0.2);padding:0.2rem 0.5rem;border-radius:0.25rem;">
+                    <input type="checkbox" class="payment-checkbox admin-confirm" ${p.confirmed ? 'checked' : ''} onchange="adminConfirmPayment('${u.oderId}', this.checked)" title="Admin xác nhận thanh toán">
+                    <span style="font-size:0.65rem;font-weight:600;color:#1e40af">Xác nhận</span>
+                </label>`;
+        }
+        
         html += `<div class="payment-card ${p.paid ? 'paid' : ''} ${isOwn ? 'own-payment' : ''}">
             <div class="payment-header ${headerClass}">
                 <span>👤 ${u.name} ${isOwn ? '(Bạn)' : ''}</span>
                 <div class="payment-actions">
-                    <span class="payment-status ${p.confirmed ? 'status-confirmed' : (p.paid ? 'status-paid' : 'status-unpaid')}">${p.confirmed ? '✓✓ Xác nhận' : (p.paid ? '✓ Đã TT' : '○ Chưa TT')}</span>
+                    <span class="payment-status ${p.confirmed ? 'status-confirmed' : (p.paid ? 'status-paid' : 'status-unpaid')}">${p.confirmed ? '✓✓ Đã xác nhận' : (p.paid ? '✓ Đã TT' : '○ Chưa TT')}</span>
                     <span style="font-weight:700;margin-left:0.3rem">${formatMoney(u.total)}</span>
-                    ${isOwn || isAdmin() ? `<input type="checkbox" class="payment-checkbox" ${p.paid ? 'checked' : ''} onchange="togglePayment('${u.oderId}', '${u.name}')" title="Đã thanh toán">` : ''}
-                    ${isAdmin() ? `<input type="checkbox" class="payment-checkbox admin-confirm" ${p.confirmed ? 'checked' : ''} onchange="adminConfirmPayment('${u.oderId}', this.checked)" title="Admin xác nhận">` : ''}
+                    ${userCheckbox}
+                    ${adminCheckbox}
                 </div>
             </div>
             <div class="payment-body">${u.orders.map(o => `<div class="payment-item"><span>${o.variant} x${o.quantity}</span><span>${formatMoney(o.total || o.price * o.quantity)}</span></div>`).join('')}</div>
@@ -830,36 +863,63 @@ async function submitOrder() {
     const qty = parseInt($('selectQuantity').value), note = $('inputNote').value;
     if (!dish || !variant) return;
     
-    const order = { id: state.editingOrderId || Date.now().toString(), oderId: currentUser.id, person: currentUser.name, dish, variant, quantity: qty, price: state.currentPrice, total: state.currentPrice * qty, note };
+    const order = { 
+        id: state.editingOrderId || Date.now().toString(), 
+        oderId: currentUser.id,  // ID người đặt
+        person: currentUser.name, 
+        dish, 
+        variant, 
+        quantity: qty, 
+        price: state.currentPrice, 
+        total: state.currentPrice * qty, 
+        note 
+    };
     $('btnSubmit').disabled = true; $('btnSubmit').textContent = '⏳...';
     
     const action = state.editingOrderId ? 'updateOrder' : 'addOrder';
-    const result = await callApi(action, { order, userId: currentUser.id, isAdmin: isAdmin() });
+    const result = await callApi(action, { order, oderId: currentUser.id, isAdmin: isAdmin() });
     if (result?.success) { showSuccess(state.editingOrderId ? 'Đã cập nhật!' : 'Đặt món thành công!'); await loadData(); resetOrderForm(); }
     else { showError(result?.error || 'Lỗi'); $('btnSubmit').disabled = false; $('btnSubmit').textContent = state.editingOrderId ? '💾 Cập nhật' : '🛒 Đặt món'; }
 }
 
 function editOrder(id) {
-    const o = state.orders.find(x => x.id === id); if (!o) return;
-    state.editingOrderId = o.id; $('selectDish').value = o.dish;
+    const o = state.orders.find(x => String(x.id) === String(id)); 
+    if (!o) return;
+    
+    // Kiểm tra quyền
+    const isOwn = String(o.oderId) === String(currentUser?.id);
+    if (!isAdmin() && !isOwn) {
+        showError('Bạn chỉ có thể sửa đơn của mình!');
+        return;
+    }
+    
+    state.editingOrderId = o.id; 
+    $('selectDish').value = o.dish;
     renderVariantOptions(o.dish);
     setTimeout(() => { $('selectVariant').value = o.variant; updatePrice(); }, 50);
-    $('selectQuantity').value = o.quantity; $('inputNote').value = o.note || '';
-    $('formTitle').textContent = '✏️ Chỉnh sửa'; $('btnSubmit').textContent = '💾 Cập nhật';
-    $('btnCancel').classList.remove('hidden'); updateSubmitBtn(); showTab('order');
+    $('selectQuantity').value = o.quantity; 
+    $('inputNote').value = o.note || '';
+    $('formTitle').textContent = '✏️ Chỉnh sửa đơn'; 
+    $('btnSubmit').textContent = '💾 Cập nhật';
+    $('btnCancel').classList.remove('hidden'); 
+    updateSubmitBtn(); 
+    showTab('order');
+    
+    // Scroll lên form
+    document.querySelector('.card').scrollIntoView({ behavior: 'smooth' });
 }
 
 async function deleteOrder(id) {
     if (!confirm('Xóa đơn này?')) return;
-    const result = await callApi('deleteOrder', { id, userId: currentUser.id, isAdmin: isAdmin() });
+    const result = await callApi('deleteOrder', { id, oderId: currentUser.id, isAdmin: isAdmin() });
     if (result?.success) { showSuccess('Đã xóa!'); await loadData(); }
     else showError(result?.error || 'Lỗi');
 }
 
 // ============ PAYMENT FUNCTIONS ============
-async function togglePayment(oderId, userName) {
-    const current = state.payments[oderId]?.paid || false;
-    const result = await callApi('savePayment', { oderId, userName, paid: !current });
+async function togglePayment(userId, userName) {
+    const current = state.payments[userId]?.paid || false;
+    const result = await callApi('savePayment', { userId, userName, paid: !current });
     if (result?.success) await loadData();
     else showError(result?.error || 'Lỗi');
 }
