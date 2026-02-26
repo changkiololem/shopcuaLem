@@ -176,8 +176,33 @@
         .modal-body { padding: 0.75rem; }
         .modal-footer { padding: 0.75rem; border-top: 1px solid #e5e7eb; display: flex; gap: 0.3rem; justify-content: flex-end; }
         
+        .toggle-switch { position: relative; display: inline-block; width: 2rem; height: 1.1rem; }
+        .toggle-switch input { opacity: 0; width: 0; height: 0; }
+        .toggle-slider { position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background: #d1d5db; border-radius: 1.1rem; transition: 0.2s; }
+        .toggle-slider:before { position: absolute; content: ""; height: 0.8rem; width: 0.8rem; left: 0.15rem; bottom: 0.15rem; background: white; border-radius: 50%; transition: 0.2s; }
+        input:checked + .toggle-slider { background: #22c55e; }
+        input:checked + .toggle-slider:before { transform: translateX(0.9rem); }
         .dish-badge { display: inline-block; padding: 0.1rem 0.35rem; background: #e0e7ff; color: #4338ca; border-radius: 0.2rem; font-size: 0.6rem; font-weight: 600; }
+        .dish-badge.hidden-dish { background: #f3f4f6; color: #9ca3af; text-decoration: line-through; }
         .role-badge { padding: 0.15rem 0.4rem; border-radius: 1rem; font-size: 0.6rem; font-weight: 600; }
+        /* Image Popup on hover */
+        .img-popup-wrap { position: relative; display: inline-block; }
+        .img-popup-wrap .img-popup {
+            display: none; position: fixed; z-index: 9999;
+            background: white; border-radius: 0.6rem;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.22);
+            padding: 0.4rem; pointer-events: none;
+            transition: opacity 0.15s;
+        }
+        .img-popup-wrap:hover .img-popup { display: block; }
+        .img-popup img { width: 180px; height: 180px; object-fit: cover; border-radius: 0.4rem; display: block; }
+        .img-popup-label { font-size: 0.65rem; color: #6b7280; text-align: center; margin-top: 0.25rem; }
+        .price-item { cursor: default; }
+        .price-item.has-img { cursor: pointer; }
+        .price-item.has-img:hover { background: #fff7ed; }
+        .menu-thumb { width: 2rem; height: 2rem; object-fit: cover; border-radius: 0.25rem; border: 1px solid #e5e7eb; vertical-align: middle; }
+        .menu-no-img { width: 2rem; height: 2rem; background: #f3f4f6; border-radius: 0.25rem; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; border: 1px dashed #d1d5db; }
+
         .role-admin { background: #fef3c7; color: #92400e; }
         .role-user { background: #e0e7ff; color: #4338ca; }
     </style>
@@ -339,9 +364,10 @@
                             <input type="text" id="inputNewDish" class="form-input" placeholder="Món chính...">
                             <input type="text" id="inputNewVariant" class="form-input" placeholder="Biến thể...">
                             <input type="number" id="inputNewPrice" class="form-input" placeholder="Giá">
+                            <input type="text" id="inputNewImage" class="form-input" placeholder="URL hình ảnh (tuỳ chọn)" style="grid-column: span 2">
                             <button class="btn btn-success" onclick="addMenuItem()">➕ Thêm</button>
                         </div>
-                        <div class="table-container"><table><thead><tr><th>Món</th><th>Biến thể</th><th class="text-right">Giá</th><th style="width:70px" class="text-center">Thao tác</th></tr></thead><tbody id="menuList"></tbody></table></div>
+                        <div class="table-container"><table><thead><tr><th style="width:40px">Hình</th><th>Món</th><th>Biến thể</th><th class="text-right">Giá</th><th class="text-center" style="width:50px">Hiện</th><th style="width:70px" class="text-center">Thao tác</th></tr></thead><tbody id="menuList"></tbody></table></div>
                     </div>
                 </div>
                 <div class="card">
@@ -388,6 +414,7 @@
                 <div class="form-group"><label class="form-label">Món chính</label><input type="text" id="editMenuDish" class="form-input"></div>
                 <div class="form-group"><label class="form-label">Biến thể</label><input type="text" id="editMenuVariant" class="form-input"></div>
                 <div class="form-group"><label class="form-label">Giá</label><input type="number" id="editMenuPrice" class="form-input"></div>
+                <div class="form-group"><label class="form-label">🖼️ URL hình minh họa</label><input type="text" id="editMenuImage" class="form-input" placeholder="https://..."><div id="editMenuImagePreview" style="margin-top:0.4rem"></div></div>
             </div>
             <div class="modal-footer"><button class="btn btn-secondary" onclick="closeModal('modalEditMenu')">Hủy</button><button class="btn btn-primary" onclick="saveEditMenuItem()">💾 Lưu</button></div>
         </div>
@@ -677,14 +704,16 @@ async function deleteAnnouncement(id) {
 
 // ============ RENDER ============
 function renderSelects() {
-    $('selectDish').innerHTML = '<option value="">-- Chọn --</option>' + state.dishes.map(d => `<option value="${d}">${d}</option>`).join('');
+    // Lọc dishes còn món không ẩn
+    const visibleDishes = [...new Set(state.variants.filter(v => v.hidden !== true && v.hidden !== 'true' && v.hidden !== 1 && v.hidden !== 'TRUE').map(v => v.dish))];
+    $('selectDish').innerHTML = '<option value="">-- Chọn --</option>' + visibleDishes.map(d => `<option value="${d}">${d}</option>`).join('');
 }
 
 function renderVariantOptions(dish) {
     const select = $('selectVariant');
     select.innerHTML = '<option value="">-- Chọn --</option>';
     if (!dish) { select.disabled = true; return; }
-    state.variants.filter(v => v.dish === dish).forEach(v => { select.innerHTML += `<option value="${v.variant}">${v.variant}</option>`; });
+    state.variants.filter(v => v.dish === dish && v.hidden !== true && v.hidden !== 'true' && v.hidden !== 1 && v.hidden !== 'TRUE').forEach(v => { select.innerHTML += `<option value="${v.variant}">${v.variant}</option>`; });
     select.disabled = false;
 }
 
@@ -820,17 +849,70 @@ function renderPayment() {
 
 function renderPriceList() {
     const grouped = {};
-    state.variants.forEach(v => { if (!grouped[v.dish]) grouped[v.dish] = []; grouped[v.dish].push(v); });
+    state.variants.filter(v => v.hidden !== true && v.hidden !== 'true' && v.hidden !== 1 && v.hidden !== 'TRUE').forEach(v => { if (!grouped[v.dish]) grouped[v.dish] = []; grouped[v.dish].push(v); });
     let html = '';
     Object.keys(grouped).sort().forEach(dish => {
         const items = grouped[dish].sort((a, b) => a.price - b.price);
-        html += `<div class="price-card"><div class="price-card-header">🍽️ ${dish}</div>${items.map(v => `<div class="price-item"><span>${v.variant}</span><span class="text-green">${formatMoney(v.price)}</span></div>`).join('')}</div>`;
+        html += `<div class="price-card"><div class="price-card-header">🍽️ ${dish}</div>${items.map(v => {
+            if (v.imageUrl) {
+                return `<div class="price-item has-img img-popup-wrap"
+                    onmousemove="movePopup(event,'popup_${v.variant.replace(/[^a-zA-Z0-9]/g,'_')}')"
+                    onmouseleave="hidePopup('popup_${v.variant.replace(/[^a-zA-Z0-9]/g,'_')}')">
+                    <span>🖼️ ${v.variant}</span>
+                    <span class="text-green">${formatMoney(v.price)}</span>
+                    <div class="img-popup" id="popup_${v.variant.replace(/[^a-zA-Z0-9]/g,'_')}">
+                        <img src="${v.imageUrl}" alt="${v.variant}" onerror="this.parentElement.parentElement.style.display='none'">
+                        <div class="img-popup-label">${v.variant}</div>
+                    </div>
+                </div>`;
+            }
+            return `<div class="price-item"><span>${v.variant}</span><span class="text-green">${formatMoney(v.price)}</span></div>`;
+        }).join('')}</div>`;
     });
     $('priceListContainer').innerHTML = html || '<div class="empty"><div class="empty-icon">📋</div><p>Chưa có món</p></div>';
 }
 
+function movePopup(e, id) {
+    const popup = document.getElementById(id);
+    if (!popup) return;
+    popup.style.display = 'block';
+    const pw = 200, ph = 220;
+    let x = e.clientX + 16, y = e.clientY - 20;
+    if (x + pw > window.innerWidth)  x = e.clientX - pw - 8;
+    if (y + ph > window.innerHeight) y = window.innerHeight - ph - 8;
+    if (y < 0) y = 8;
+    popup.style.left = x + 'px';
+    popup.style.top  = y + 'px';
+}
+
+function hidePopup(id) {
+    const popup = document.getElementById(id);
+    if (popup) popup.style.display = 'none';
+}
+
 function renderMenuList() {
-    $('menuList').innerHTML = state.variants.map(v => `<tr><td><span class="dish-badge">${v.dish}</span></td><td>${v.variant}</td><td class="text-right text-green">${formatMoney(v.price)}</td><td class="text-center"><button class="btn btn-sm btn-secondary" onclick="openEditMenuItem('${v.variant}')">✏️</button><button class="btn btn-sm btn-danger" onclick="deleteMenuItem('${v.variant}')">🗑️</button></td></tr>`).join('') || '<tr><td colspan="4" class="text-center" style="color:#9ca3af">Chưa có</td></tr>';
+    $('menuList').innerHTML = state.variants.map(v => {
+        const isHidden = v.hidden === true || v.hidden === 'true' || v.hidden === 1 || v.hidden === 'TRUE';
+        const thumb = v.imageUrl
+            ? `<img src="${v.imageUrl}" class="menu-thumb" alt="${v.variant}" onerror="this.style.display='none'">`
+            : `<span class="menu-no-img">🍽️</span>`;
+        return `<tr style="${isHidden ? 'opacity:0.5' : ''}">
+            <td class="text-center">${thumb}</td>
+            <td><span class="dish-badge ${isHidden ? 'hidden-dish' : ''}">${v.dish}</span></td>
+            <td>${v.variant}</td>
+            <td class="text-right text-green">${formatMoney(v.price)}</td>
+            <td class="text-center">
+                <label class="toggle-switch">
+                    <input type="checkbox" ${isHidden ? '' : 'checked'} onchange="toggleMenuItemVisibility('${v.variant}', this.checked)" title="${isHidden ? 'Đang ẩn - Click để hiện' : 'Đang hiện - Click để ẩn'}">
+                    <span class="toggle-slider"></span>
+                </label>
+            </td>
+            <td class="text-center">
+                <button class="btn btn-sm btn-secondary" onclick="openEditMenuItem('${v.variant}')">✏️</button>
+                <button class="btn btn-sm btn-danger" onclick="deleteMenuItem('${v.variant}')">🗑️</button>
+            </td>
+        </tr>`;
+    }).join('') || '<tr><td colspan="6" class="text-center" style="color:#9ca3af">Chưa có</td></tr>';
 }
 
 function renderUserList() {
@@ -957,9 +1039,10 @@ async function saveBankInfo() {
 // ============ MENU FUNCTIONS ============
 async function addMenuItem() {
     const dish = $('inputNewDish').value.trim(), variant = $('inputNewVariant').value.trim(), price = parseInt($('inputNewPrice').value) || 0;
+    const imageUrl = $('inputNewImage').value.trim();
     if (!dish || !variant) return showError('Nhập đủ thông tin!');
-    const result = await callApi('addMenuItem', { dish, variant, price });
-    if (result?.success) { showSuccess('Đã thêm!'); $('inputNewDish').value = ''; $('inputNewVariant').value = ''; $('inputNewPrice').value = ''; await loadData(); }
+    const result = await callApi('addMenuItem', { dish, variant, price, imageUrl });
+    if (result?.success) { showSuccess('Đã thêm!'); $('inputNewDish').value = ''; $('inputNewVariant').value = ''; $('inputNewPrice').value = ''; $('inputNewImage').value = ''; await loadData(); }
     else showError(result?.error || 'Lỗi');
 }
 
@@ -967,13 +1050,20 @@ function openEditMenuItem(variantName) {
     const item = state.variants.find(v => v.variant === variantName); if (!item) return;
     $('editMenuOldVariant').value = variantName; $('editMenuDish').value = item.dish;
     $('editMenuVariant').value = item.variant; $('editMenuPrice').value = item.price;
+    $('editMenuImage').value = item.imageUrl || '';
+    const prev = $('editMenuImagePreview');
+    prev.innerHTML = item.imageUrl ? `<img src="${item.imageUrl}" style="width:80px;height:80px;object-fit:cover;border-radius:0.3rem;border:1px solid #e5e7eb" onerror="this.remove()">` : '';
+    $('editMenuImage').oninput = function() {
+        prev.innerHTML = this.value ? `<img src="${this.value}" style="width:80px;height:80px;object-fit:cover;border-radius:0.3rem;border:1px solid #e5e7eb" onerror="this.remove()">` : '';
+    };
     $('modalEditMenu').classList.remove('hidden');
 }
 
 async function saveEditMenuItem() {
     const oldVariant = $('editMenuOldVariant').value, dish = $('editMenuDish').value.trim(), variant = $('editMenuVariant').value.trim(), price = parseInt($('editMenuPrice').value) || 0;
+    const imageUrl = $('editMenuImage').value.trim();
     if (!dish || !variant) return showError('Nhập đủ thông tin!');
-    const result = await callApi('updateMenuItem', { oldVariant, dish, variant, price });
+    const result = await callApi('updateMenuItem', { oldVariant, dish, variant, price, imageUrl });
     if (result?.success) { showSuccess('Đã cập nhật!'); closeModal('modalEditMenu'); await loadData(); }
     else showError(result?.error || 'Lỗi');
 }
@@ -1003,6 +1093,24 @@ async function deleteUser(userId) {
     const result = await callApi('adminDeleteUser', { adminId: currentUser.id, userId });
     if (result?.success) { showSuccess('Đã xóa!'); await loadData(); }
     else showError(result?.error || 'Lỗi');
+}
+
+// ============ MENU VISIBILITY ============
+async function toggleMenuItemVisibility(variant, visible) {
+    const result = await callApi('toggleMenuVisibility', { variant, hidden: !visible });
+    if (result?.success) {
+        // Update local state immediately
+        const item = state.variants.find(v => v.variant === variant);
+        if (item) item.hidden = !visible;
+        renderMenuList();
+        renderSelects();
+        showSuccess(visible ? `Đã hiện "${variant}"` : `Đã ẩn "${variant}"`);
+    } else {
+        showError(result?.error || 'Lỗi cập nhật hiển thị');
+        // Revert checkbox
+        await loadData();
+        renderMenuList();
+    }
 }
 </script>
 </body>
