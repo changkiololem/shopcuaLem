@@ -185,21 +185,49 @@
         .dish-badge { display: inline-block; padding: 0.1rem 0.35rem; background: #e0e7ff; color: #4338ca; border-radius: 0.2rem; font-size: 0.6rem; font-weight: 600; }
         .dish-badge.hidden-dish { background: #f3f4f6; color: #9ca3af; text-decoration: line-through; }
         .role-badge { padding: 0.15rem 0.4rem; border-radius: 1rem; font-size: 0.6rem; font-weight: 600; }
-        /* Image Popup on hover */
-        .img-popup-wrap { position: relative; display: inline-block; }
-        .img-popup-wrap .img-popup {
-            display: none; position: fixed; z-index: 9999;
-            background: white; border-radius: 0.6rem;
-            box-shadow: 0 8px 32px rgba(0,0,0,0.22);
-            padding: 0.4rem; pointer-events: none;
-            transition: opacity 0.15s;
-        }
-        .img-popup-wrap:hover .img-popup { display: block; }
-        .img-popup img { width: 180px; height: 180px; object-fit: cover; border-radius: 0.4rem; display: block; }
-        .img-popup-label { font-size: 0.65rem; color: #6b7280; text-align: center; margin-top: 0.25rem; }
+        /* Image Popup on click */
         .price-item { cursor: default; }
         .price-item.has-img { cursor: pointer; }
         .price-item.has-img:hover { background: #fff7ed; }
+
+        /* Global image lightbox */
+        #imgLightbox {
+            display: none; position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.55); backdrop-filter: blur(4px);
+            align-items: center; justify-content: center;
+        }
+        #imgLightbox.active { display: flex; }
+        #imgLightbox .lb-card {
+            background: white; border-radius: 1rem;
+            box-shadow: 0 24px 64px rgba(0,0,0,0.35);
+            overflow: hidden; max-width: 320px; width: 90%;
+            animation: lbPop 0.22s cubic-bezier(.34,1.56,.64,1) both;
+        }
+        @keyframes lbPop {
+            from { opacity: 0; transform: scale(0.82) translateY(16px); }
+            to   { opacity: 1; transform: scale(1)   translateY(0); }
+        }
+        #imgLightbox .lb-img {
+            width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block;
+        }
+        #imgLightbox .lb-img-placeholder {
+            width: 100%; aspect-ratio: 1/1; background: #f3f4f6;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 3rem;
+        }
+        #imgLightbox .lb-body { padding: 0.9rem 1rem 1rem; }
+        #imgLightbox .lb-name { font-weight: 700; font-size: 1rem; color: #1f2937; margin-bottom: 0.2rem; }
+        #imgLightbox .lb-dish { font-size: 0.7rem; color: #6b7280; margin-bottom: 0.5rem; }
+        #imgLightbox .lb-price { font-size: 1.1rem; font-weight: 700; color: #16a34a; }
+        #imgLightbox .lb-close {
+            position: absolute; top: 0.6rem; right: 0.7rem;
+            background: rgba(0,0,0,0.45); border: none; color: white;
+            width: 1.8rem; height: 1.8rem; border-radius: 50%; cursor: pointer;
+            font-size: 0.85rem; display: flex; align-items: center; justify-content: center;
+            transition: background 0.15s;
+        }
+        #imgLightbox .lb-close:hover { background: rgba(0,0,0,0.7); }
+        #imgLightbox .lb-inner { position: relative; }
         .menu-thumb { width: 2rem; height: 2rem; object-fit: cover; border-radius: 0.25rem; border: 1px solid #e5e7eb; vertical-align: middle; }
         .menu-no-img { width: 2rem; height: 2rem; background: #f3f4f6; border-radius: 0.25rem; display: inline-flex; align-items: center; justify-content: center; font-size: 0.7rem; border: 1px dashed #d1d5db; }
 
@@ -381,6 +409,22 @@
         <footer class="footer">🍜 Hệ thống đặt cơm trưa © 2024</footer>
     </div>
 
+
+    <!-- Image Lightbox -->
+    <div id="imgLightbox" onclick="closeLightbox(event)">
+        <div class="lb-card">
+            <div class="lb-inner">
+                <div id="lbImgWrap"></div>
+                <button class="lb-close" onclick="closeLightboxBtn()">✕</button>
+            </div>
+            <div class="lb-body">
+                <div id="lbName" class="lb-name"></div>
+                <div id="lbDish" class="lb-dish"></div>
+                <div id="lbPrice" class="lb-price"></div>
+            </div>
+        </div>
+    </div>
+
     <!-- Modals -->
     <div id="modalProfile" class="modal hidden">
         <div class="modal-content">
@@ -436,7 +480,7 @@
 // ╔════════════════════════════════════════════════════════════════╗
 // ║  CẤU HÌNH: DÁN URL GOOGLE APPS SCRIPT VÀO ĐÂY                  ║
 // ╚════════════════════════════════════════════════════════════════╝
-const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbxU1DW8_Z7W0-K1YtKO0a7mYdUmevDSqTqn_ubQi3GkMmLe76uIM3meIsqIng083ode/exec';
+const SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbwhcUX_iuJQjXfLTKxD49HLCHnfyYVew_OoSl6drZ375Z02mCxO3S2Aqvv_tVQpUSbS/exec';
 
 // ============ STATE ============
 let currentUser = null;
@@ -494,6 +538,7 @@ document.addEventListener('DOMContentLoaded', () => {
         $('authPage').classList.remove('hidden');
     }
     
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') _doCloseLightbox(); });
     $('selectDish').addEventListener('change', function() { renderVariantOptions(this.value); $('selectVariant').value = ''; updatePrice(); updateSubmitBtn(); });
     $('selectVariant').addEventListener('change', function() { updatePrice(); updateSubmitBtn(); });
     $('selectQuantity').addEventListener('change', updatePrice);
@@ -855,15 +900,12 @@ function renderPriceList() {
         const items = grouped[dish].sort((a, b) => a.price - b.price);
         html += `<div class="price-card"><div class="price-card-header">🍽️ ${dish}</div>${items.map(v => {
             if (v.imageUrl) {
-                return `<div class="price-item has-img img-popup-wrap"
-                    onmousemove="movePopup(event,'popup_${v.variant.replace(/[^a-zA-Z0-9]/g,'_')}')"
-                    onmouseleave="hidePopup('popup_${v.variant.replace(/[^a-zA-Z0-9]/g,'_')}')">
+                const safeVariant = v.variant.replace(/'/g, "\\'");
+                const safeDish    = v.dish.replace(/'/g, "\\'");
+                const safeImg     = v.imageUrl.replace(/'/g, "\\'");
+                return `<div class="price-item has-img" onclick="openLightbox('${safeVariant}','${safeDish}','${safeImg}',${v.price})">
                     <span>🖼️ ${v.variant}</span>
                     <span class="text-green">${formatMoney(v.price)}</span>
-                    <div class="img-popup" id="popup_${v.variant.replace(/[^a-zA-Z0-9]/g,'_')}">
-                        <img src="${v.imageUrl}" alt="${v.variant}" onerror="this.parentElement.parentElement.style.display='none'">
-                        <div class="img-popup-label">${v.variant}</div>
-                    </div>
                 </div>`;
             }
             return `<div class="price-item"><span>${v.variant}</span><span class="text-green">${formatMoney(v.price)}</span></div>`;
@@ -872,22 +914,26 @@ function renderPriceList() {
     $('priceListContainer').innerHTML = html || '<div class="empty"><div class="empty-icon">📋</div><p>Chưa có món</p></div>';
 }
 
-function movePopup(e, id) {
-    const popup = document.getElementById(id);
-    if (!popup) return;
-    popup.style.display = 'block';
-    const pw = 200, ph = 220;
-    let x = e.clientX + 16, y = e.clientY - 20;
-    if (x + pw > window.innerWidth)  x = e.clientX - pw - 8;
-    if (y + ph > window.innerHeight) y = window.innerHeight - ph - 8;
-    if (y < 0) y = 8;
-    popup.style.left = x + 'px';
-    popup.style.top  = y + 'px';
+function openLightbox(variant, dish, imageUrl, price) {
+    $('lbName').textContent  = variant;
+    $('lbDish').textContent  = '🍽️ ' + dish;
+    $('lbPrice').textContent = formatMoney(price);
+    $('lbImgWrap').innerHTML = imageUrl
+        ? `<img class="lb-img" src="${imageUrl}" alt="${variant}" onerror="this.outerHTML='<div class=\"lb-img-placeholder\">🍽️</div>'">`
+        : '<div class="lb-img-placeholder">🍽️</div>';
+    $('imgLightbox').classList.add('active');
+    document.body.style.overflow = 'hidden';
 }
 
-function hidePopup(id) {
-    const popup = document.getElementById(id);
-    if (popup) popup.style.display = 'none';
+function closeLightbox(e) {
+    if (e.target === $('imgLightbox')) _doCloseLightbox();
+}
+
+function closeLightboxBtn() { _doCloseLightbox(); }
+
+function _doCloseLightbox() {
+    $('imgLightbox').classList.remove('active');
+    document.body.style.overflow = '';
 }
 
 function renderMenuList() {
